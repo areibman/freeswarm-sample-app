@@ -156,6 +156,7 @@ const App: React.FC = () => {
   };
 
   const isDraw = winner === 'O' && board.every(cell => cell !== null);
+  const cellIds = [0, 1, 2, 3, 4, 5, 6, 7, 8];
 
   return (
     <div className="min-h-screen bg-te-white grid-pattern flex flex-col items-center justify-center p-4 safe-area-pt safe-area-pb">
@@ -243,8 +244,6 @@ const App: React.FC = () => {
       {/* Game Board */}
       <div className="relative w-full max-w-[min(92vw,520px)] sm:max-w-[min(92vw,560px)] md:max-w-[min(92vw,600px)]">
         <div className="grid grid-cols-3 gap-0 bg-te-black p-1 animate-grid-appear aspect-square">
-  const cellIds = [0,1,2,3,4,5,6,7,8];
-
           {cellIds.map((id) => {
             const cell = board[id];
             return (
@@ -261,7 +260,6 @@ const App: React.FC = () => {
                 ${id % 3 !== 2 ? 'border-r-2 border-te-black' : ''}
                 ${id < 6 ? 'border-b-2 border-te-black' : ''}
               `}
-            `}
               {cell && (
                 <span
                   className={`
