@@ -161,7 +161,7 @@ const App: React.FC = () => {
   const isDraw = winner === 'O' && board.every(cell => cell !== null);
 
   return (
-    <div className="min-h-screen bg-te-white grid-pattern flex flex-col items-center justify-center p-4">
+    <div className="min-h-dvh bg-te-white grid-pattern flex flex-col items-center justify-center p-4 pb-[max(env(safe-area-inset-bottom),1rem)] pt-[max(env(safe-area-inset-top),1rem)]">
       {/* Header */}
       <div className="max-w-lg w-full mb-8">
         <div className="flex items-center justify-between mb-2">
@@ -245,14 +245,14 @@ const App: React.FC = () => {
 
       {/* Game Board */}
       <div className="relative">
-        <div className="grid grid-cols-3 gap-0 bg-te-black p-1 animate-grid-appear">
+        <div className="grid grid-cols-3 gap-0 bg-te-black p-1 animate-grid-appear select-none touch-pan-y">
           {board.map((cell, index) => (
             <button
               key={index}
               onClick={() => handleCellClick(index)}
               disabled={!!cell || !!winner || (gameMode === 'pvc' && currentPlayer === 'O')}
               className={`
-                w-24 h-24 bg-te-white flex items-center justify-center
+                board-cell-size bg-te-white flex items-center justify-center
                 transition-all duration-200 relative overflow-hidden
                 ${!cell && !winner ? 'hover:bg-te-gray cursor-pointer' : ''}
                 ${winningLine?.includes(index) ? 'bg-te-orange/20' : ''}
@@ -263,7 +263,7 @@ const App: React.FC = () => {
               {cell && (
                 <span
                   className={`
-                    text-5xl font-bold animate-mark-appear
+                    board-mark-size font-bold animate-mark-appear
                     ${cell === 'X' ? 'text-te-black' : 'text-te-orange'}
                     ${winningLine?.includes(index) ? 'text-shadow-glow' : ''}
                   `}
@@ -310,7 +310,7 @@ const App: React.FC = () => {
       </div>
 
       {/* Control Buttons */}
-      <div className="max-w-lg w-full mt-6 flex gap-2">
+      <div className="max-w-lg w-full mt-6 flex gap-2 sticky bottom-0 z-10">
         <button
           onClick={resetGame}
           className="flex-1 bg-te-black text-te-white py-3 px-6 text-xs uppercase tracking-wider font-medium hover:bg-te-orange transition-colors"

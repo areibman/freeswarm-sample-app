@@ -6,14 +6,33 @@
   body {
     @apply bg-te-white text-te-black font-mono antialiased;
     font-feature-settings: "tnum" on, "lnum" on;
+    -webkit-tap-highlight-color: transparent;
+    text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+    touch-action: manipulation;
+    min-height: 100dvh;
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
   }
 
   * {
     @apply box-border;
+    -webkit-touch-callout: none;
   }
 
   ::selection {
     @apply bg-te-orange text-te-white;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }
 
@@ -27,5 +46,16 @@
 
   .text-shadow-glow {
     text-shadow: 0 0 20px rgba(255, 107, 0, 0.5);
+  }
+
+  /* Mobile-first board sizing */
+  .board-cell-size {
+    width: clamp(4.5rem, 24vw, 6rem);
+    height: clamp(4.5rem, 24vw, 6rem);
+  }
+
+  .board-mark-size {
+    font-size: clamp(2.25rem, 10vw, 3rem);
+    line-height: 1;
   }
 }
