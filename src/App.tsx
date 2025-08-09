@@ -1,5 +1,5 @@
 import type React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 type Player = 'X' | 'O' | null;
 type Board = Player[];
@@ -12,6 +12,41 @@ const App: React.FC = () => {
   const [score, setScore] = useState({ X: 0, O: 0 });
   const [gameMode, setGameMode] = useState<'pvp' | 'pvc'>('pvp');
   const [difficulty, setDifficulty] = useState<'easy' | 'hard'>('hard');
+
+  const audioCtx = useRef<AudioContext | null>(null);
+
+  const playSound = (index: number, player: Player) => {
+    if (!audioCtx.current) {
+      const AudioContextClass =
+        window.AudioContext ||
+        (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      audioCtx.current = new AudioContextClass();
+    }
+    const ctx = audioCtx.current;
+    if (!ctx) return;
+
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    const panner = ctx.createPanner();
+
+    const x = (index % 3) - 1;
+    const y = 1 - Math.floor(index / 3);
+
+    panner.panningModel = 'HRTF';
+    panner.positionX.value = x;
+    panner.positionY.value = y;
+    panner.positionZ.value = -0.5;
+
+    osc.type = 'square';
+    osc.frequency.value = player === 'X' ? 440 : 660;
+    osc.connect(gain).connect(panner).connect(ctx.destination);
+
+    gain.gain.setValueAtTime(0.2, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
+
+    osc.start();
+    osc.stop(ctx.currentTime + 0.2);
+  };
 
   const winPatterns = [
     [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
@@ -47,18 +82,18 @@ const App: React.FC = () => {
         }
       }
       return bestScore;
-    } else {
-      let bestScore = Number.POSITIVE_INFINITY;
-      for (let i = 0; i < 9; i++) {
-        if (squares[i] === null) {
-          squares[i] = 'X';
-          const score = minimax(squares, depth + 1, true);
-          squares[i] = null;
-          bestScore = Math.min(score, bestScore);
-        }
-      }
-      return bestScore;
     }
+
+    let bestScore = Number.POSITIVE_INFINITY;
+    for (let i = 0; i < 9; i++) {
+      if (squares[i] === null) {
+        squares[i] = 'X';
+        const score = minimax(squares, depth + 1, true);
+        squares[i] = null;
+        bestScore = Math.min(score, bestScore);
+      }
+    }
+    return bestScore;
   };
 
   const getBestMove = (squares: Board): number => {
@@ -69,10 +104,9 @@ const App: React.FC = () => {
       }
       const availableMoves = squares.map((s, i) => s === null ? i : -1).filter(i => i !== -1);
       return availableMoves[Math.floor(Math.random() * availableMoves.length)];
-    } else {
-      // Hard mode: always best move
-      return getMinimaxMove(squares);
     }
+    // Hard mode: always best move
+    return getMinimaxMove(squares);
   };
 
   const getMinimaxMove = (squares: Board): number => {
@@ -95,6 +129,7 @@ const App: React.FC = () => {
     return bestMove;
   };
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: custom game loop dependencies
   useEffect(() => {
     if (gameMode === 'pvc' && currentPlayer === 'O' && !winner) {
       const timer = setTimeout(() => {
@@ -102,6 +137,7 @@ const App: React.FC = () => {
         const move = getBestMove(newBoard);
         if (move !== -1) {
           newBoard[move] = 'O';
+          playSound(move, 'O');
           setBoard(newBoard);
 
           const result = checkWinner(newBoard);
@@ -129,6 +165,7 @@ const App: React.FC = () => {
 
     const newBoard = [...board];
     newBoard[index] = currentPlayer;
+    playSound(index, currentPlayer);
     setBoard(newBoard);
 
     const result = checkWinner(newBoard);
@@ -168,7 +205,7 @@ const App: React.FC = () => {
           <div className="text-xs uppercase tracking-wider text-te-black/50">TE-01</div>
           <div className="text-xs uppercase tracking-wider text-te-black/50">V1.0</div>
         </div>
-        <h1 className="text-3xl font-bold uppercase tracking-tight mb-1">Tic Tac Toe</h1>
+        <h1 className="text-3xl font-bold uppercase tracking-tight mb-1">Tic Tac Toe 3D Soundboard</h1>
         <div className="h-0.5 bg-te-black w-full" />
       </div>
 
@@ -248,6 +285,7 @@ const App: React.FC = () => {
         <div className="grid grid-cols-3 gap-0 bg-te-black p-1 animate-grid-appear">
           {board.map((cell, index) => (
             <button
+              // biome-ignore lint/suspicious/noArrayIndexKey: grid positions are static
               key={index}
               onClick={() => handleCellClick(index)}
               disabled={!!cell || !!winner || (gameMode === 'pvc' && currentPlayer === 'O')}
@@ -328,7 +366,7 @@ const App: React.FC = () => {
       {/* Footer */}
       <div className="max-w-lg w-full mt-8 text-center">
         <div className="text-xs uppercase tracking-wider text-te-black/30">
-          teenage engineering × tic tac toe
+          teenage engineering × 3d soundboard
         </div>
       </div>
     </div>
