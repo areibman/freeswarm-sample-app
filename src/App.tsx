@@ -47,32 +47,29 @@ const App: React.FC = () => {
         }
       }
       return bestScore;
-    } else {
-      let bestScore = Number.POSITIVE_INFINITY;
-      for (let i = 0; i < 9; i++) {
-        if (squares[i] === null) {
-          squares[i] = 'X';
-          const score = minimax(squares, depth + 1, true);
-          squares[i] = null;
-          bestScore = Math.min(score, bestScore);
-        }
-      }
-      return bestScore;
     }
+
+    let bestScore = Number.POSITIVE_INFINITY;
+    for (let i = 0; i < 9; i++) {
+      if (squares[i] === null) {
+        squares[i] = 'X';
+        const score = minimax(squares, depth + 1, true);
+        squares[i] = null;
+        bestScore = Math.min(score, bestScore);
+      }
+    }
+    return bestScore;
   };
 
   const getBestMove = (squares: Board): number => {
     if (difficulty === 'easy') {
-      // Easy mode: random move with 30% chance of best move
       if (Math.random() < 0.3) {
         return getMinimaxMove(squares);
       }
-      const availableMoves = squares.map((s, i) => s === null ? i : -1).filter(i => i !== -1);
+      const availableMoves = squares.map((s, i) => (s === null ? i : -1)).filter(i => i !== -1);
       return availableMoves[Math.floor(Math.random() * availableMoves.length)];
-    } else {
-      // Hard mode: always best move
-      return getMinimaxMove(squares);
     }
+    return getMinimaxMove(squares);
   };
 
   const getMinimaxMove = (squares: Board): number => {
@@ -122,7 +119,7 @@ const App: React.FC = () => {
 
       return () => clearTimeout(timer);
     }
-  }, [board, currentPlayer, gameMode, winner, difficulty]);
+  }, [board, currentPlayer, gameMode, winner, getBestMove, checkWinner]);
 
   const handleCellClick = (index: number) => {
     if (board[index] || winner || (gameMode === 'pvc' && currentPlayer === 'O')) return;
@@ -246,35 +243,40 @@ const App: React.FC = () => {
       {/* Game Board */}
       <div className="relative w-full max-w-[min(92vw,520px)] sm:max-w-[min(92vw,560px)] md:max-w-[min(92vw,600px)]">
         <div className="grid grid-cols-3 gap-0 bg-te-black p-1 animate-grid-appear aspect-square">
-          {board.map((cell, index) => (
+  const cellIds = [0,1,2,3,4,5,6,7,8];
+
+          {cellIds.map((id) => {
+            const cell = board[id];
+            return (
             <button
-              key={index}
-              onClick={() => handleCellClick(index)}
+              key={id}
+              onClick={() => handleCellClick(id)}
               disabled={!!cell || !!winner || (gameMode === 'pvc' && currentPlayer === 'O')}
               className={`
                 relative overflow-hidden flex items-center justify-center transition-all duration-200
                 aspect-square min-w-[56px] min-h-[56px] sm:min-w-[64px] sm:min-h-[64px]
                 bg-te-white
                 ${!cell && !winner ? 'hover:bg-te-gray cursor-pointer' : ''}
-                ${winningLine?.includes(index) ? 'bg-te-orange/20' : ''}
-                ${index % 3 !== 2 ? 'border-r-2 border-te-black' : ''}
-                ${index < 6 ? 'border-b-2 border-te-black' : ''}
+                ${winningLine?.includes(id) ? 'bg-te-orange/20' : ''}
+                ${id % 3 !== 2 ? 'border-r-2 border-te-black' : ''}
+                ${id < 6 ? 'border-b-2 border-te-black' : ''}
               `}
-            >
+            `}
               {cell && (
                 <span
                   className={`
                     font-bold animate-mark-appear
                     text-[clamp(2rem,12vw,4rem)] sm:text-[clamp(2.25rem,10vw,4.5rem)] md:text-5xl
                     ${cell === 'X' ? 'text-te-black' : 'text-te-orange'}
-                    ${winningLine?.includes(index) ? 'text-shadow-glow' : ''}
+                    ${winningLine?.includes(id) ? 'text-shadow-glow' : ''}
                   `}
                 >
                   {cell}
                 </span>
               )}
             </button>
-          ))}
+            );
+          })}
         </div>
 
         {/* Grid Lines Overlay */}
