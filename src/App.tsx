@@ -252,7 +252,7 @@ const App: React.FC = () => {
               onClick={() => handleCellClick(index)}
               disabled={!!cell || !!winner || (gameMode === 'pvc' && currentPlayer === 'O')}
               className={`
-                w-24 h-24 bg-te-white flex items-center justify-center
+                w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 bg-te-white flex items-center justify-center
                 transition-all duration-200 relative overflow-hidden
                 ${!cell && !winner ? 'hover:bg-te-gray cursor-pointer' : ''}
                 ${winningLine?.includes(index) ? 'bg-te-orange/20' : ''}
@@ -263,7 +263,7 @@ const App: React.FC = () => {
               {cell && (
                 <span
                   className={`
-                    text-5xl font-bold animate-mark-appear
+                    text-4xl sm:text-5xl md:text-6xl font-bold animate-mark-appear
                     ${cell === 'X' ? 'text-te-black' : 'text-te-orange'}
                     ${winningLine?.includes(index) ? 'text-shadow-glow' : ''}
                   `}
