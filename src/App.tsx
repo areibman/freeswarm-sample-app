@@ -260,6 +260,7 @@ const App: React.FC = () => {
                 ${id % 3 !== 2 ? 'border-r-2 border-te-black' : ''}
                 ${id < 6 ? 'border-b-2 border-te-black' : ''}
               `}
+              >
               {cell && (
                 <span
                   className={`
