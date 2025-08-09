@@ -61,17 +61,6 @@ const App: React.FC = () => {
     return bestScore;
   }, [checkWinner]);
 
-  const getBestMove = useCallback((squares: Board): number => {
-    if (difficulty === 'easy') {
-      if (Math.random() < 0.3) {
-        return getMinimaxMove(squares);
-      }
-      const availableMoves = squares.map((s, i) => (s === null ? i : -1)).filter(i => i !== -1);
-      return availableMoves[Math.floor(Math.random() * availableMoves.length)];
-    }
-    return getMinimaxMove(squares);
-  }, [difficulty, getMinimaxMove]);
-
   const getMinimaxMove = useCallback((squares: Board): number => {
     let bestScore = Number.NEGATIVE_INFINITY;
     let bestMove = -1;
@@ -91,6 +80,17 @@ const App: React.FC = () => {
 
     return bestMove;
   }, [minimax]);
+
+  const getBestMove = useCallback((squares: Board): number => {
+    if (difficulty === 'easy') {
+      if (Math.random() < 0.3) {
+        return getMinimaxMove(squares);
+      }
+      const availableMoves = squares.map((s, i) => (s === null ? i : -1)).filter(i => i !== -1);
+      return availableMoves[Math.floor(Math.random() * availableMoves.length)];
+    }
+    return getMinimaxMove(squares);
+  }, [difficulty, getMinimaxMove]);
 
   useEffect(() => {
     if (gameMode === 'pvc' && currentPlayer === 'O' && !winner) {
