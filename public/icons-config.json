@@ -1,0 +1,38 @@
+{
+  "icons": {
+    "description": "Required PWA icons for mobile optimization",
+    "required": [
+      {
+        "name": "icon-192.png",
+        "size": "192x192",
+        "purpose": "App icon for Android home screen"
+      },
+      {
+        "name": "icon-512.png",
+        "size": "512x512",
+        "purpose": "Splash screen icon for Android"
+      },
+      {
+        "name": "apple-touch-icon.png",
+        "size": "180x180",
+        "purpose": "App icon for iOS home screen"
+      },
+      {
+        "name": "favicon-16x16.png",
+        "size": "16x16",
+        "purpose": "Browser tab icon"
+      },
+      {
+        "name": "favicon-32x32.png",
+        "size": "32x32",
+        "purpose": "Browser tab icon (high DPI)"
+      }
+    ],
+    "design_guidelines": {
+      "background": "#FAFAFA",
+      "foreground": "#FF6B00",
+      "style": "Minimalist design inspired by Teenage Engineering",
+      "content": "X and O symbols or TE-01 branding"
+    }
+  }
+}
