@@ -1,5 +1,5 @@
 import type React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 type Player = 'X' | 'O' | null;
 type Board = Player[];
@@ -19,7 +19,7 @@ const App: React.FC = () => {
     [0, 4, 8], [2, 4, 6] // Diagonals
   ];
 
-  const checkWinner = (squares: Board): { winner: Player; line: number[] | null } => {
+  const checkWinner = useCallback((squares: Board): { winner: Player; line: number[] | null } => {
     for (const pattern of winPatterns) {
       const [a, b, c] = pattern;
       if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
@@ -27,9 +27,9 @@ const App: React.FC = () => {
       }
     }
     return { winner: null, line: null };
-  };
+  }, []);
 
-  const minimax = (squares: Board, depth: number, isMaximizing: boolean): number => {
+  const minimax = useCallback((squares: Board, depth: number, isMaximizing: boolean): number => {
     const result = checkWinner(squares);
 
     if (result.winner === 'O') return 10 - depth;
@@ -59,9 +59,9 @@ const App: React.FC = () => {
       }
     }
     return bestScore;
-  };
+  }, [checkWinner]);
 
-  const getBestMove = (squares: Board): number => {
+  const getBestMove = useCallback((squares: Board): number => {
     if (difficulty === 'easy') {
       if (Math.random() < 0.3) {
         return getMinimaxMove(squares);
@@ -70,9 +70,9 @@ const App: React.FC = () => {
       return availableMoves[Math.floor(Math.random() * availableMoves.length)];
     }
     return getMinimaxMove(squares);
-  };
+  }, [difficulty, getMinimaxMove]);
 
-  const getMinimaxMove = (squares: Board): number => {
+  const getMinimaxMove = useCallback((squares: Board): number => {
     let bestScore = Number.NEGATIVE_INFINITY;
     let bestMove = -1;
 
@@ -90,7 +90,7 @@ const App: React.FC = () => {
     }
 
     return bestMove;
-  };
+  }, [minimax]);
 
   useEffect(() => {
     if (gameMode === 'pvc' && currentPlayer === 'O' && !winner) {
