@@ -1,5 +1,5 @@
 import type React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 type Player = 'X' | 'O' | null;
 type Board = Player[];
@@ -12,6 +12,23 @@ const App: React.FC = () => {
   const [score, setScore] = useState({ X: 0, O: 0 });
   const [gameMode, setGameMode] = useState<'pvp' | 'pvc'>('pvp');
   const [difficulty, setDifficulty] = useState<'easy' | 'hard'>('hard');
+  const audioCtxRef = useRef<AudioContext | null>(null);
+
+  const playSound = (player: Player) => {
+    if (!audioCtxRef.current) {
+      audioCtxRef.current = new AudioContext();
+    }
+    const ctx = audioCtxRef.current;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = player === 'X' ? 440 : 660;
+    gain.gain.value = 0.1;
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.2);
+  };
 
   const winPatterns = [
     [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
@@ -47,18 +64,17 @@ const App: React.FC = () => {
         }
       }
       return bestScore;
-    } else {
-      let bestScore = Number.POSITIVE_INFINITY;
-      for (let i = 0; i < 9; i++) {
-        if (squares[i] === null) {
-          squares[i] = 'X';
-          const score = minimax(squares, depth + 1, true);
-          squares[i] = null;
-          bestScore = Math.min(score, bestScore);
-        }
-      }
-      return bestScore;
     }
+    let bestScore = Number.POSITIVE_INFINITY;
+    for (let i = 0; i < 9; i++) {
+      if (squares[i] === null) {
+        squares[i] = 'X';
+        const score = minimax(squares, depth + 1, true);
+        squares[i] = null;
+        bestScore = Math.min(score, bestScore);
+      }
+    }
+    return bestScore;
   };
 
   const getBestMove = (squares: Board): number => {
@@ -69,10 +85,9 @@ const App: React.FC = () => {
       }
       const availableMoves = squares.map((s, i) => s === null ? i : -1).filter(i => i !== -1);
       return availableMoves[Math.floor(Math.random() * availableMoves.length)];
-    } else {
-      // Hard mode: always best move
-      return getMinimaxMove(squares);
     }
+    // Hard mode: always best move
+    return getMinimaxMove(squares);
   };
 
   const getMinimaxMove = (squares: Board): number => {
@@ -95,6 +110,7 @@ const App: React.FC = () => {
     return bestMove;
   };
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: controlled by explicit dependencies
   useEffect(() => {
     if (gameMode === 'pvc' && currentPlayer === 'O' && !winner) {
       const timer = setTimeout(() => {
@@ -102,6 +118,7 @@ const App: React.FC = () => {
         const move = getBestMove(newBoard);
         if (move !== -1) {
           newBoard[move] = 'O';
+          playSound('O');
           setBoard(newBoard);
 
           const result = checkWinner(newBoard);
@@ -122,13 +139,14 @@ const App: React.FC = () => {
 
       return () => clearTimeout(timer);
     }
-  }, [board, currentPlayer, gameMode, winner, difficulty]);
+  }, [board, currentPlayer, gameMode, winner]);
 
   const handleCellClick = (index: number) => {
     if (board[index] || winner || (gameMode === 'pvc' && currentPlayer === 'O')) return;
 
     const newBoard = [...board];
     newBoard[index] = currentPlayer;
+    playSound(currentPlayer);
     setBoard(newBoard);
 
     const result = checkWinner(newBoard);
@@ -244,17 +262,18 @@ const App: React.FC = () => {
       </div>
 
       {/* Game Board */}
-      <div className="relative">
-        <div className="grid grid-cols-3 gap-0 bg-te-black p-1 animate-grid-appear">
+      <div className="relative perspective-[1000px]">
+        <div className="grid grid-cols-3 gap-0 bg-te-black p-1 animate-grid-appear transform-gpu rotate-x-6">
           {board.map((cell, index) => (
             <button
+              // biome-ignore lint/suspicious/noArrayIndexKey: stable 3x3 grid
               key={index}
               onClick={() => handleCellClick(index)}
               disabled={!!cell || !!winner || (gameMode === 'pvc' && currentPlayer === 'O')}
               className={`
-                w-24 h-24 bg-te-white flex items-center justify-center
+                w-24 h-24 bg-te-white flex items-center justify-center transform
                 transition-all duration-200 relative overflow-hidden
-                ${!cell && !winner ? 'hover:bg-te-gray cursor-pointer' : ''}
+                ${!cell && !winner ? 'hover:bg-te-gray cursor-pointer active:translate-y-[2px]' : ''}
                 ${winningLine?.includes(index) ? 'bg-te-orange/20' : ''}
                 ${index % 3 !== 2 ? 'border-r-2 border-te-black' : ''}
                 ${index < 6 ? 'border-b-2 border-te-black' : ''}
