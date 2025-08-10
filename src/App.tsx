@@ -12,6 +12,7 @@ const App: React.FC = () => {
   const [score, setScore] = useState({ X: 0, O: 0 });
   const [gameMode, setGameMode] = useState<'pvp' | 'pvc'>('pvp');
   const [difficulty, setDifficulty] = useState<'easy' | 'hard'>('hard');
+  const [isPurpleBackground, setIsPurpleBackground] = useState(false);
 
   const winPatterns = [
     [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
@@ -161,7 +162,7 @@ const App: React.FC = () => {
   const isDraw = winner === 'O' && board.every(cell => cell !== null);
 
   return (
-    <div className="min-h-screen bg-te-white grid-pattern flex flex-col items-center justify-center p-4">
+    <div className={`min-h-screen ${isPurpleBackground ? 'bg-purple-600' : 'bg-te-white'} grid-pattern flex flex-col items-center justify-center p-4`}>
       {/* Header */}
       <div className="max-w-lg w-full mb-8">
         <div className="flex items-center justify-between mb-2">
@@ -170,6 +171,16 @@ const App: React.FC = () => {
         </div>
         <h1 className="text-3xl font-bold uppercase tracking-tight mb-1">Tic Tac Toe</h1>
         <div className="h-0.5 bg-te-black w-full" />
+      </div>
+
+      {/* Purple Background Toggle Button */}
+      <div className="max-w-lg w-full mb-4">
+        <button
+          onClick={() => setIsPurpleBackground(!isPurpleBackground)}
+          className="w-full py-3 px-6 bg-purple-700 text-white text-xs uppercase tracking-wider font-medium hover:bg-purple-800 transition-colors rounded shadow-lg"
+        >
+          {isPurpleBackground ? 'Reset Background' : 'Change Background to Purple'}
+        </button>
       </div>
 
       {/* Game Mode Selector */}
