@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     port: 3000,
     host: '0.0.0.0',
-    allowedHosts: ["pflxn.vm.freestyle.sh"]
+    allowedHosts: ['fapso.vm.freestyle.sh', 'pflxn.vm.freestyle.sh'],
   },
   preview: {
     port: 3000,
