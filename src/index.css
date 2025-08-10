@@ -28,4 +28,39 @@
   .text-shadow-glow {
     text-shadow: 0 0 20px rgba(255, 107, 0, 0.5);
   }
+
+  .device-3d {
+    perspective: 1000px;
+  }
+
+  .device-3d-inner {
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .device-3d-inner:hover {
+    transform: rotateX(8deg) rotateY(-8deg) translateY(-4px);
+  }
+
+  .device-3d-inner::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: theme('colors.te-gray');
+    border-radius: 0.5rem; /* 8px */
+    transform: translateZ(-20px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    pointer-events: none;
+  }
+
+  /* Interactive press effect for buttons / cells */
+  .pressable-3d {
+    transform-style: preserve-3d;
+    transition: transform 0.15s ease-out, box-shadow 0.15s ease-out;
+  }
+  .pressable-3d:active {
+    transform: translateZ(-6px) scale(0.97);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) inset;
+  }
 }
