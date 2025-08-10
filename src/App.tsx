@@ -1,5 +1,29 @@
 import type React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
+
+const winPatterns: number[][] = [
+  [0, 1, 2],
+  [3, 4, 5],
+  [6, 7, 8],
+  [0, 3, 6],
+  [1, 4, 7],
+  [2, 5, 8],
+  [0, 4, 8],
+  [2, 4, 6],
+];
+
+const frequencies: number[] = [261.63, 293.66, 329.63, 349.23, 392, 440, 493.88, 523.25, 587.33];
+const cellIds = [
+  'cell-0',
+  'cell-1',
+  'cell-2',
+  'cell-3',
+  'cell-4',
+  'cell-5',
+  'cell-6',
+  'cell-7',
+  'cell-8',
+];
 
 type Player = 'X' | 'O' | null;
 type Board = Player[];
@@ -12,14 +36,47 @@ const App: React.FC = () => {
   const [score, setScore] = useState({ X: 0, O: 0 });
   const [gameMode, setGameMode] = useState<'pvp' | 'pvc'>('pvp');
   const [difficulty, setDifficulty] = useState<'easy' | 'hard'>('hard');
+  const audioCtxRef = useRef<AudioContext | null>(null);
 
-  const winPatterns = [
-    [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
-    [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
-    [0, 4, 8], [2, 4, 6] // Diagonals
-  ];
+  const initAudio = useCallback(() => {
+    if (!audioCtxRef.current) {
+      audioCtxRef.current = new AudioContext();
+    }
+    if (audioCtxRef.current.state === 'suspended') {
+      void audioCtxRef.current.resume();
+    }
+  }, []);
 
-  const checkWinner = (squares: Board): { winner: Player; line: number[] | null } => {
+  const playSound = useCallback(
+    (index: number) => {
+      initAudio();
+      const ctx = audioCtxRef.current;
+      if (!ctx) return;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const panner = ctx.createPanner();
+
+    osc.frequency.value = frequencies[index % frequencies.length];
+
+    const x = (index % 3) - 1;
+    const y = Math.floor(index / 3) - 1;
+    panner.positionX.setValueAtTime(x, ctx.currentTime);
+    panner.positionY.setValueAtTime(-y, ctx.currentTime);
+    panner.positionZ.setValueAtTime(-0.5, ctx.currentTime);
+
+    gain.gain.setValueAtTime(0.2, ctx.currentTime);
+
+    osc.connect(gain);
+    gain.connect(panner);
+    panner.connect(ctx.destination);
+
+      osc.start();
+      osc.stop(ctx.currentTime + 0.15);
+    },
+    [initAudio],
+  );
+
+  const checkWinner = useCallback((squares: Board): { winner: Player; line: number[] | null } => {
     for (const pattern of winPatterns) {
       const [a, b, c] = pattern;
       if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
@@ -27,10 +84,11 @@ const App: React.FC = () => {
       }
     }
     return { winner: null, line: null };
-  };
+  }, []);
 
-  const minimax = (squares: Board, depth: number, isMaximizing: boolean): number => {
-    const result = checkWinner(squares);
+  const minimax = useCallback(
+    (squares: Board, depth: number, isMaximizing: boolean): number => {
+      const result = checkWinner(squares);
 
     if (result.winner === 'O') return 10 - depth;
     if (result.winner === 'X') return depth - 10;
@@ -47,53 +105,59 @@ const App: React.FC = () => {
         }
       }
       return bestScore;
-    } else {
-      let bestScore = Number.POSITIVE_INFINITY;
-      for (let i = 0; i < 9; i++) {
-        if (squares[i] === null) {
-          squares[i] = 'X';
-          const score = minimax(squares, depth + 1, true);
-          squares[i] = null;
-          bestScore = Math.min(score, bestScore);
-        }
-      }
-      return bestScore;
     }
-  };
-
-  const getBestMove = (squares: Board): number => {
-    if (difficulty === 'easy') {
-      // Easy mode: random move with 30% chance of best move
-      if (Math.random() < 0.3) {
-        return getMinimaxMove(squares);
-      }
-      const availableMoves = squares.map((s, i) => s === null ? i : -1).filter(i => i !== -1);
-      return availableMoves[Math.floor(Math.random() * availableMoves.length)];
-    } else {
-      // Hard mode: always best move
-      return getMinimaxMove(squares);
-    }
-  };
-
-  const getMinimaxMove = (squares: Board): number => {
-    let bestScore = Number.NEGATIVE_INFINITY;
-    let bestMove = -1;
-
+    let bestScore = Number.POSITIVE_INFINITY;
     for (let i = 0; i < 9; i++) {
       if (squares[i] === null) {
-        squares[i] = 'O';
-        const score = minimax(squares, 0, false);
+        squares[i] = 'X';
+        const score = minimax(squares, depth + 1, true);
         squares[i] = null;
-
-        if (score > bestScore) {
-          bestScore = score;
-          bestMove = i;
-        }
+        bestScore = Math.min(score, bestScore);
       }
     }
+      return bestScore;
+    },
+    [checkWinner],
+  );
 
-    return bestMove;
-  };
+  const getMinimaxMove = useCallback(
+    (squares: Board): number => {
+      let bestScore = Number.NEGATIVE_INFINITY;
+      let bestMove = -1;
+
+      for (let i = 0; i < 9; i++) {
+        if (squares[i] === null) {
+          squares[i] = 'O';
+          const score = minimax(squares, 0, false);
+          squares[i] = null;
+
+          if (score > bestScore) {
+            bestScore = score;
+            bestMove = i;
+          }
+        }
+      }
+
+      return bestMove;
+    },
+    [minimax],
+  );
+
+  const getBestMove = useCallback(
+    (squares: Board): number => {
+      if (difficulty === 'easy') {
+        // Easy mode: random move with 30% chance of best move
+        if (Math.random() < 0.3) {
+          return getMinimaxMove(squares);
+        }
+        const availableMoves = squares.map((s, i) => (s === null ? i : -1)).filter(i => i !== -1);
+        return availableMoves[Math.floor(Math.random() * availableMoves.length)];
+      }
+      // Hard mode: always best move
+      return getMinimaxMove(squares);
+    },
+    [difficulty, getMinimaxMove],
+  );
 
   useEffect(() => {
     if (gameMode === 'pvc' && currentPlayer === 'O' && !winner) {
@@ -103,6 +167,7 @@ const App: React.FC = () => {
         if (move !== -1) {
           newBoard[move] = 'O';
           setBoard(newBoard);
+          playSound(move);
 
           const result = checkWinner(newBoard);
           if (result.winner) {
@@ -122,7 +187,7 @@ const App: React.FC = () => {
 
       return () => clearTimeout(timer);
     }
-  }, [board, currentPlayer, gameMode, winner, difficulty]);
+  }, [board, currentPlayer, gameMode, winner, getBestMove, playSound, checkWinner]);
 
   const handleCellClick = (index: number) => {
     if (board[index] || winner || (gameMode === 'pvc' && currentPlayer === 'O')) return;
@@ -130,6 +195,7 @@ const App: React.FC = () => {
     const newBoard = [...board];
     newBoard[index] = currentPlayer;
     setBoard(newBoard);
+    playSound(index);
 
     const result = checkWinner(newBoard);
     if (result.winner) {
@@ -244,11 +310,14 @@ const App: React.FC = () => {
       </div>
 
       {/* Game Board */}
-      <div className="relative">
-        <div className="grid grid-cols-3 gap-0 bg-te-black p-1 animate-grid-appear">
+      <div className="relative" style={{ perspective: '800px' }}>
+        <div
+          className="grid grid-cols-3 gap-0 bg-te-black p-1 animate-grid-appear transform-gpu"
+          style={{ transform: 'rotateX(20deg)' }}
+        >
           {board.map((cell, index) => (
             <button
-              key={index}
+              key={cellIds[index]}
               onClick={() => handleCellClick(index)}
               disabled={!!cell || !!winner || (gameMode === 'pvc' && currentPlayer === 'O')}
               className={`
