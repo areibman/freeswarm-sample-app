@@ -12,6 +12,8 @@ const App: React.FC = () => {
   const [score, setScore] = useState({ X: 0, O: 0 });
   const [gameMode, setGameMode] = useState<'pvp' | 'pvc'>('pvp');
   const [difficulty, setDifficulty] = useState<'easy' | 'hard'>('hard');
+  // Toggle for purple background mode
+  const [purpleMode, setPurpleMode] = useState<boolean>(false);
 
   const winPatterns = [
     [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
@@ -161,7 +163,7 @@ const App: React.FC = () => {
   const isDraw = winner === 'O' && board.every(cell => cell !== null);
 
   return (
-    <div className="min-h-screen bg-te-white grid-pattern flex flex-col items-center justify-center p-4">
+    <div className={`min-h-screen ${purpleMode ? 'bg-purple-500' : 'bg-te-white'} grid-pattern flex flex-col items-center justify-center p-4`}>
       {/* Header */}
       <div className="max-w-lg w-full mb-8">
         <div className="flex items-center justify-between mb-2">
@@ -322,6 +324,12 @@ const App: React.FC = () => {
           className="flex-1 bg-te-gray text-te-black py-3 px-6 text-xs uppercase tracking-wider font-medium hover:bg-te-black hover:text-te-white transition-colors"
         >
           Reset Score
+        </button>
+        <button
+          onClick={() => setPurpleMode(prev => !prev)}
+          className={`flex-1 ${purpleMode ? 'bg-purple-700' : 'bg-purple-500'} text-te-white py-3 px-6 text-xs uppercase tracking-wider font-medium hover:bg-purple-600 transition-colors`}
+        >
+          {purpleMode ? 'Default Mode' : 'Purple Mode'}
         </button>
       </div>
 
