@@ -26,6 +26,7 @@
   }
 
   .text-shadow-glow {
-    text-shadow: 0 0 20px rgba(255, 107, 0, 0.5);
+    /* Use purple-colored glow */
+    text-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
   }
 }

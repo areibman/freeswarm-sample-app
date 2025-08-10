@@ -7,7 +7,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        'te-orange': '#FF6B00',
+        'te-orange': '#8B5CF6',
         'te-black': '#1A1A1A',
         'te-gray': '#E5E5E5',
         'te-white': '#FAFAFA',
