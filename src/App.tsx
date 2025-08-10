@@ -161,175 +161,216 @@ const App: React.FC = () => {
   const isDraw = winner === 'O' && board.every(cell => cell !== null);
 
   return (
-    <div className="min-h-screen bg-te-white grid-pattern flex flex-col items-center justify-center p-4">
-      {/* Header */}
-      <div className="max-w-lg w-full mb-8">
-        <div className="flex items-center justify-between mb-2">
-          <div className="text-xs uppercase tracking-wider text-te-black/50">TE-01</div>
-          <div className="text-xs uppercase tracking-wider text-te-black/50">V1.0</div>
-        </div>
-        <h1 className="text-3xl font-bold uppercase tracking-tight mb-1">Tic Tac Toe</h1>
-        <div className="h-0.5 bg-te-black w-full" />
-      </div>
-
-      {/* Game Mode Selector */}
-      <div className="max-w-lg w-full mb-6">
-        <div className="flex gap-2 mb-4">
-          <button
-            onClick={() => { setGameMode('pvp'); resetGame(); }}
-            className={`flex-1 py-2 px-4 text-xs uppercase tracking-wider font-medium transition-all ${
-              gameMode === 'pvp'
-                ? 'bg-te-orange text-te-white'
-                : 'bg-te-gray text-te-black hover:bg-te-black/10'
-            }`}
-          >
-            Player vs Player
-          </button>
-          <button
-            onClick={() => { setGameMode('pvc'); resetGame(); }}
-            className={`flex-1 py-2 px-4 text-xs uppercase tracking-wider font-medium transition-all ${
-              gameMode === 'pvc'
-                ? 'bg-te-orange text-te-white'
-                : 'bg-te-gray text-te-black hover:bg-te-black/10'
-            }`}
-          >
-            Player vs CPU
-          </button>
+    <div className="min-h-screen bg-te-white te-ambient-light grid-pattern flex flex-col items-center justify-center p-4 perspective-1000">
+      {/* Main Hardware Panel Container */}
+      <div className="te-hardware-panel te-float max-w-lg w-full p-8 transform transition-all duration-500">
+        
+        {/* Header with 3D effect */}
+        <div className="mb-8 te-interactive">
+          <div className="flex items-center justify-between mb-3">
+            <div className="text-xs uppercase tracking-wider text-te-black/50 te-bezel px-2 py-1 rounded">TE-01</div>
+            <div className="text-xs uppercase tracking-wider text-te-black/50 te-bezel px-2 py-1 rounded">V1.0</div>
+          </div>
+          <h1 className="text-3xl font-bold uppercase tracking-tight mb-2 transform transition-transform hover:scale-105">
+            Tic Tac Toe
+          </h1>
+          <div className="h-1 bg-gradient-to-r from-te-orange via-te-black to-te-orange shadow-te-raised" />
         </div>
 
-        {gameMode === 'pvc' && (
-          <div className="flex gap-2">
+        {/* Game Mode Selector with 3D buttons */}
+        <div className="mb-8">
+          <div className="flex gap-3 mb-4">
             <button
-              onClick={() => { setDifficulty('easy'); resetGame(); }}
-              className={`flex-1 py-2 px-4 text-xs uppercase tracking-wider font-medium transition-all ${
-                difficulty === 'easy'
-                  ? 'bg-te-black text-te-white'
-                  : 'bg-te-gray text-te-black hover:bg-te-black/10'
+              onClick={() => { setGameMode('pvp'); resetGame(); }}
+              className={`flex-1 py-3 px-4 text-xs uppercase tracking-wider font-medium rounded transition-all duration-200 ${
+                gameMode === 'pvp'
+                  ? 'te-orange-button text-te-white shadow-te-deep'
+                  : 'te-hardware-button text-te-black'
               }`}
             >
-              Easy
+              Player vs Player
             </button>
             <button
-              onClick={() => { setDifficulty('hard'); resetGame(); }}
-              className={`flex-1 py-2 px-4 text-xs uppercase tracking-wider font-medium transition-all ${
-                difficulty === 'hard'
-                  ? 'bg-te-black text-te-white'
-                  : 'bg-te-gray text-te-black hover:bg-te-black/10'
+              onClick={() => { setGameMode('pvc'); resetGame(); }}
+              className={`flex-1 py-3 px-4 text-xs uppercase tracking-wider font-medium rounded transition-all duration-200 ${
+                gameMode === 'pvc'
+                  ? 'te-orange-button text-te-white shadow-te-deep'
+                  : 'te-hardware-button text-te-black'
               }`}
             >
-              Hard
+              Player vs CPU
             </button>
           </div>
-        )}
-      </div>
 
-      {/* Score Display */}
-      <div className="max-w-lg w-full mb-6">
-        <div className="grid grid-cols-3 gap-4 bg-te-gray p-4">
-          <div className="text-center">
-            <div className="text-xs uppercase tracking-wider mb-1 text-te-black/50">Player X</div>
-            <div className="text-2xl font-bold">{score.X}</div>
-          </div>
-          <div className="text-center">
-            <div className="text-xs uppercase tracking-wider mb-1 text-te-black/50">Draw</div>
-            <div className="text-2xl font-bold">-</div>
-          </div>
-          <div className="text-center">
-            <div className="text-xs uppercase tracking-wider mb-1 text-te-black/50">
-              {gameMode === 'pvc' ? 'CPU O' : 'Player O'}
-            </div>
-            <div className="text-2xl font-bold">{score.O}</div>
-          </div>
-        </div>
-      </div>
-
-      {/* Game Board */}
-      <div className="relative">
-        <div className="grid grid-cols-3 gap-0 bg-te-black p-1 animate-grid-appear">
-          {board.map((cell, index) => (
-            <button
-              key={index}
-              onClick={() => handleCellClick(index)}
-              disabled={!!cell || !!winner || (gameMode === 'pvc' && currentPlayer === 'O')}
-              className={`
-                w-24 h-24 bg-te-white flex items-center justify-center
-                transition-all duration-200 relative overflow-hidden
-                ${!cell && !winner ? 'hover:bg-te-gray cursor-pointer' : ''}
-                ${winningLine?.includes(index) ? 'bg-te-orange/20' : ''}
-                ${index % 3 !== 2 ? 'border-r-2 border-te-black' : ''}
-                ${index < 6 ? 'border-b-2 border-te-black' : ''}
-              `}
-            >
-              {cell && (
-                <span
-                  className={`
-                    text-5xl font-bold animate-mark-appear
-                    ${cell === 'X' ? 'text-te-black' : 'text-te-orange'}
-                    ${winningLine?.includes(index) ? 'text-shadow-glow' : ''}
-                  `}
-                >
-                  {cell}
-                </span>
-              )}
-            </button>
-          ))}
-        </div>
-
-        {/* Grid Lines Overlay */}
-        <div className="absolute inset-0 pointer-events-none">
-          <svg className="w-full h-full" viewBox="0 0 290 290">
-            <line x1="97" y1="5" x2="97" y2="285" stroke="#1A1A1A" strokeWidth="2"/>
-            <line x1="193" y1="5" x2="193" y2="285" stroke="#1A1A1A" strokeWidth="2"/>
-            <line x1="5" y1="97" x2="285" y2="97" stroke="#1A1A1A" strokeWidth="2"/>
-            <line x1="5" y1="193" x2="285" y2="193" stroke="#1A1A1A" strokeWidth="2"/>
-          </svg>
-        </div>
-      </div>
-
-      {/* Status Display */}
-      <div className="max-w-lg w-full mt-6 text-center">
-        <div className="bg-te-gray p-4">
-          {winner ? (
-            <div>
-              <div className="text-xs uppercase tracking-wider mb-2 text-te-black/50">
-                {isDraw ? 'Game Draw' : 'Winner'}
-              </div>
-              <div className={`text-2xl font-bold ${isDraw ? 'text-te-black' : 'text-te-orange'}`}>
-                {isDraw ? 'Draw!' : `Player ${winner} Wins!`}
-              </div>
-            </div>
-          ) : (
-            <div>
-              <div className="text-xs uppercase tracking-wider mb-2 text-te-black/50">Current Turn</div>
-              <div className={`text-2xl font-bold ${currentPlayer === 'X' ? 'text-te-black' : 'text-te-orange'}`}>
-                {gameMode === 'pvc' && currentPlayer === 'O' ? 'CPU' : 'Player'} {currentPlayer}
-              </div>
+          {gameMode === 'pvc' && (
+            <div className="flex gap-3 animate-grid-appear">
+              <button
+                onClick={() => { setDifficulty('easy'); resetGame(); }}
+                className={`flex-1 py-3 px-4 text-xs uppercase tracking-wider font-medium rounded transition-all duration-200 ${
+                  difficulty === 'easy'
+                    ? 'te-black-button text-te-white shadow-te-deep'
+                    : 'te-hardware-button text-te-black'
+                }`}
+              >
+                Easy
+              </button>
+              <button
+                onClick={() => { setDifficulty('hard'); resetGame(); }}
+                className={`flex-1 py-3 px-4 text-xs uppercase tracking-wider font-medium rounded transition-all duration-200 ${
+                  difficulty === 'hard'
+                    ? 'te-black-button text-te-white shadow-te-deep'
+                    : 'te-hardware-button text-te-black'
+                }`}
+              >
+                Hard
+              </button>
             </div>
           )}
         </div>
-      </div>
 
-      {/* Control Buttons */}
-      <div className="max-w-lg w-full mt-6 flex gap-2">
-        <button
-          onClick={resetGame}
-          className="flex-1 bg-te-black text-te-white py-3 px-6 text-xs uppercase tracking-wider font-medium hover:bg-te-orange transition-colors"
-        >
-          New Game
-        </button>
-        <button
-          onClick={resetScore}
-          className="flex-1 bg-te-gray text-te-black py-3 px-6 text-xs uppercase tracking-wider font-medium hover:bg-te-black hover:text-te-white transition-colors"
-        >
-          Reset Score
-        </button>
-      </div>
-
-      {/* Footer */}
-      <div className="max-w-lg w-full mt-8 text-center">
-        <div className="text-xs uppercase tracking-wider text-te-black/30">
-          teenage engineering × tic tac toe
+        {/* Score Display with hardware panel styling */}
+        <div className="mb-8 te-interactive">
+          <div className="te-bezel p-6 rounded-lg">
+            <div className="grid grid-cols-3 gap-6">
+              <div className="text-center">
+                <div className="text-xs uppercase tracking-wider mb-2 text-te-black/50">Player X</div>
+                <div className="text-3xl font-bold te-hardware-panel rounded-lg py-2 px-4 shadow-te-inset">
+                  {score.X}
+                </div>
+              </div>
+              <div className="text-center">
+                <div className="text-xs uppercase tracking-wider mb-2 text-te-black/50">Draw</div>
+                <div className="text-3xl font-bold te-hardware-panel rounded-lg py-2 px-4 shadow-te-inset">
+                  -
+                </div>
+              </div>
+              <div className="text-center">
+                <div className="text-xs uppercase tracking-wider mb-2 text-te-black/50">
+                  {gameMode === 'pvc' ? 'CPU O' : 'Player O'}
+                </div>
+                <div className="text-3xl font-bold te-hardware-panel rounded-lg py-2 px-4 shadow-te-inset">
+                  {score.O}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+
+        {/* Game Board with enhanced 3D effects */}
+        <div className="relative mb-8 flex justify-center">
+          <div className="te-bezel p-4 rounded-xl">
+            <div className="te-game-board grid grid-cols-3 gap-1 bg-te-dark-gray p-2 rounded-lg shadow-te-deep animate-grid-appear">
+              {board.map((cell, index) => (
+                <button
+                  key={index}
+                  onClick={() => handleCellClick(index)}
+                  disabled={!!cell || !!winner || (gameMode === 'pvc' && currentPlayer === 'O')}
+                  className={`
+                    te-cell w-28 h-28 bg-te-white flex items-center justify-center rounded-md
+                    transition-all duration-200 relative overflow-hidden shadow-te-hardware
+                    ${!cell && !winner ? 'hover:shadow-te-raised cursor-pointer' : ''}
+                    ${winningLine?.includes(index) ? 'bg-te-orange/20 animate-glow' : ''}
+                  `}
+                >
+                  {cell && (
+                    <span
+                      className={`
+                        text-6xl font-bold animate-mark-appear transform transition-transform
+                        ${cell === 'X' ? 'text-te-black' : 'text-te-orange'}
+                        ${winningLine?.includes(index) ? 'text-shadow-glow scale-110' : ''}
+                      `}
+                    >
+                      {cell}
+                    </span>
+                  )}
+                  
+                  {/* Cell depth indicator */}
+                  <div className="absolute inset-0 rounded-md border border-te-black/10 pointer-events-none" />
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Status Display with floating effect */}
+        <div className="mb-8 te-float">
+          <div className="te-hardware-panel p-6 rounded-lg shadow-te-raised">
+            {winner ? (
+              <div className="text-center">
+                <div className="text-xs uppercase tracking-wider mb-3 text-te-black/50">
+                  {isDraw ? 'Game Draw' : 'Winner'}
+                </div>
+                <div className={`text-3xl font-bold transform transition-all duration-300 ${
+                  isDraw ? 'text-te-black' : 'text-te-orange animate-pulse'
+                }`}>
+                  {isDraw ? 'Draw!' : `Player ${winner} Wins!`}
+                </div>
+              </div>
+            ) : (
+              <div className="text-center">
+                <div className="text-xs uppercase tracking-wider mb-3 text-te-black/50">Current Turn</div>
+                <div className={`text-3xl font-bold transition-all duration-300 ${
+                  currentPlayer === 'X' ? 'text-te-black' : 'text-te-orange'
+                }`}>
+                  <span className="inline-block transform transition-transform hover:scale-110">
+                    {gameMode === 'pvc' && currentPlayer === 'O' ? 'CPU' : 'Player'} {currentPlayer}
+                  </span>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Control Buttons with enhanced 3D effects */}
+        <div className="flex gap-4 mb-8">
+          <button
+            onClick={resetGame}
+            className="flex-1 te-black-button text-te-white py-4 px-6 text-xs uppercase tracking-wider font-medium rounded-lg transition-all duration-200 hover:animate-tilt"
+          >
+            <span className="block transform transition-transform group-hover:scale-105">
+              New Game
+            </span>
+          </button>
+          <button
+            onClick={resetScore}
+            className="flex-1 te-hardware-button text-te-black py-4 px-6 text-xs uppercase tracking-wider font-medium rounded-lg transition-all duration-200 hover:animate-tilt"
+          >
+            <span className="block transform transition-transform group-hover:scale-105">
+              Reset Score
+            </span>
+          </button>
+        </div>
+
+        {/* Hardware-style indicators */}
+        <div className="flex justify-center gap-4 mb-6">
+          <div className={`w-3 h-3 rounded-full transition-all duration-300 ${
+            gameMode === 'pvp' ? 'bg-te-orange shadow-te-button animate-glow' : 'bg-te-gray shadow-te-inset'
+          }`} />
+          <div className={`w-3 h-3 rounded-full transition-all duration-300 ${
+            gameMode === 'pvc' ? 'bg-te-orange shadow-te-button animate-glow' : 'bg-te-gray shadow-te-inset'
+          }`} />
+          <div className={`w-3 h-3 rounded-full transition-all duration-300 ${
+            !winner && currentPlayer === 'X' ? 'bg-te-black shadow-te-button animate-pulse' : 'bg-te-gray shadow-te-inset'
+          }`} />
+          <div className={`w-3 h-3 rounded-full transition-all duration-300 ${
+            !winner && currentPlayer === 'O' ? 'bg-te-orange shadow-te-button animate-pulse' : 'bg-te-gray shadow-te-inset'
+          }`} />
+        </div>
+
+        {/* Footer with subtle 3D effect */}
+        <div className="text-center te-interactive">
+          <div className="text-xs uppercase tracking-wider text-te-black/30 transform transition-all hover:text-te-black/50 hover:scale-105">
+            teenage engineering × tic tac toe
+          </div>
+        </div>
+      </div>
+
+      {/* Ambient floating elements */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-te-orange/20 rounded-full te-float" />
+        <div className="absolute top-3/4 right-1/4 w-1 h-1 bg-te-black/10 rounded-full te-float" />
+        <div className="absolute top-1/2 left-1/6 w-1.5 h-1.5 bg-te-orange/15 rounded-full te-float" />
+        <div className="absolute bottom-1/4 right-1/3 w-1 h-1 bg-te-black/5 rounded-full te-float" />
       </div>
     </div>
   );
