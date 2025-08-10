@@ -6,10 +6,12 @@
   body {
     @apply bg-te-white text-te-black font-mono antialiased;
     font-feature-settings: "tnum" on, "lnum" on;
+    -webkit-tap-highlight-color: transparent;
   }
 
   * {
     @apply box-border;
+    touch-action: manipulation;
   }
 
   ::selection {
@@ -18,6 +20,13 @@
 }
 
 @layer utilities {
+  .safe-area-pb {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .safe-area-pt {
+    padding-top: env(safe-area-inset-top);
+  }
+
   .grid-pattern {
     background-image:
       repeating-linear-gradient(0deg, transparent, transparent 39px, #E5E5E5 39px, #E5E5E5 40px),
