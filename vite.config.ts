@@ -39,10 +39,12 @@ export default defineConfig({
     assetsInlineLimit: 4096,
   },
   server: {
-    // Enable HTTPS for PWA testing
-    https: false,
-    host: true,
-    port: 5173,
+    port: 3000,
+    host: '0.0.0.0',
+  },
+  preview: {
+    port: 3000,
+    host: '0.0.0.0',
   },
   // Optimize dependencies
   optimizeDeps: {
