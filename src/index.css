@@ -3,9 +3,24 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    /* Prevent zoom on input focus on iOS */
+    -webkit-text-size-adjust: 100%;
+    /* Smooth scrolling for better mobile experience */
+    scroll-behavior: smooth;
+  }
+
   body {
     @apply bg-te-white text-te-black font-mono antialiased;
     font-feature-settings: "tnum" on, "lnum" on;
+    /* Prevent overscroll bounce on mobile */
+    overscroll-behavior: none;
+    /* Optimize touch interactions */
+    touch-action: manipulation;
+    /* Prevent text selection during gameplay */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
   }
 
   * {
@@ -15,6 +30,26 @@
   ::selection {
     @apply bg-te-orange text-te-white;
   }
+
+  /* Optimize button interactions for mobile */
+  button {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+  }
+
+  /* Optimize animations for mobile */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
 }
 
 @layer utilities {
@@ -23,9 +58,58 @@
       repeating-linear-gradient(0deg, transparent, transparent 39px, #E5E5E5 39px, #E5E5E5 40px),
       repeating-linear-gradient(90deg, transparent, transparent 39px, #E5E5E5 39px, #E5E5E5 40px);
     background-size: 40px 40px;
+    /* Optimize background for mobile */
+    background-attachment: local;
   }
 
   .text-shadow-glow {
     text-shadow: 0 0 20px rgba(255, 107, 0, 0.5);
+  }
+
+  /* Touch-optimized utilities */
+  .touch-manipulation {
+    touch-action: manipulation;
+    will-change: transform;
+  }
+
+  /* Mobile-optimized safe area utilities */
+  .pt-safe {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .pl-safe {
+    padding-left: env(safe-area-inset-left);
+  }
+
+  .pr-safe {
+    padding-right: env(safe-area-inset-right);
+  }
+
+  /* Enhanced mobile interactions */
+  .mobile-button-press {
+    transition: all 0.1s ease;
+  }
+
+  .mobile-button-press:active {
+    transform: scale(0.95);
+    opacity: 0.8;
+  }
+
+  /* Mobile-specific game board optimizations */
+  @media (max-width: 640px) {
+    .grid-pattern {
+      background-size: 30px 30px;
+    }
+  }
+
+  /* Landscape mobile optimizations */
+  @media (orientation: landscape) and (max-height: 500px) {
+    .grid-pattern {
+      background-size: 25px 25px;
+    }
   }
 }
