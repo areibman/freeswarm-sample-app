@@ -1,5 +1,5 @@
 import type React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 type Player = 'X' | 'O' | null;
 type Board = Player[];
@@ -12,6 +12,51 @@ const App: React.FC = () => {
   const [score, setScore] = useState({ X: 0, O: 0 });
   const [gameMode, setGameMode] = useState<'pvp' | 'pvc'>('pvp');
   const [difficulty, setDifficulty] = useState<'easy' | 'hard'>('hard');
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
+  const audioCtxRef = useRef<AudioContext | null>(null);
+
+  const frequencies = [
+    261.63,
+    293.66,
+    329.63,
+    349.23,
+    392,
+    440,
+    493.88,
+    523.25,
+    587.33,
+  ];
+  const cellIds = ['c0', 'c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8'];
+
+  const playCellSound = (index: number) => {
+    const ctx = audioCtxRef.current ?? new AudioContext();
+    audioCtxRef.current = ctx;
+    if (ctx.state === 'suspended') {
+      ctx.resume();
+    }
+    const osc = ctx.createOscillator();
+    const panner = ctx.createPanner();
+    panner.panningModel = 'HRTF';
+    const xPos = (index % 3) - 1;
+    const yPos = 1 - Math.floor(index / 3);
+    panner.positionX.value = xPos;
+    panner.positionY.value = yPos;
+    panner.positionZ.value = 0.5;
+    osc.type = 'sine';
+    osc.frequency.value = frequencies[index % frequencies.length];
+    osc.connect(panner).connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.25);
+  };
+
+  const handleBoardMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width - 0.5) * 20;
+    const y = ((e.clientY - rect.top) / rect.height - 0.5) * -20;
+    setTilt({ x, y });
+  };
+
+  const handleBoardMouseLeave = () => setTilt({ x: 0, y: 0 });
 
   const winPatterns = [
     [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
@@ -47,18 +92,17 @@ const App: React.FC = () => {
         }
       }
       return bestScore;
-    } else {
-      let bestScore = Number.POSITIVE_INFINITY;
-      for (let i = 0; i < 9; i++) {
-        if (squares[i] === null) {
-          squares[i] = 'X';
-          const score = minimax(squares, depth + 1, true);
-          squares[i] = null;
-          bestScore = Math.min(score, bestScore);
-        }
-      }
-      return bestScore;
     }
+    let bestScore = Number.POSITIVE_INFINITY;
+    for (let i = 0; i < 9; i++) {
+      if (squares[i] === null) {
+        squares[i] = 'X';
+        const score = minimax(squares, depth + 1, true);
+        squares[i] = null;
+        bestScore = Math.min(score, bestScore);
+      }
+    }
+    return bestScore;
   };
 
   const getBestMove = (squares: Board): number => {
@@ -69,10 +113,9 @@ const App: React.FC = () => {
       }
       const availableMoves = squares.map((s, i) => s === null ? i : -1).filter(i => i !== -1);
       return availableMoves[Math.floor(Math.random() * availableMoves.length)];
-    } else {
-      // Hard mode: always best move
-      return getMinimaxMove(squares);
     }
+    // Hard mode: always best move
+    return getMinimaxMove(squares);
   };
 
   const getMinimaxMove = (squares: Board): number => {
@@ -95,6 +138,7 @@ const App: React.FC = () => {
     return bestMove;
   };
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: AI move timing
   useEffect(() => {
     if (gameMode === 'pvc' && currentPlayer === 'O' && !winner) {
       const timer = setTimeout(() => {
@@ -102,6 +146,7 @@ const App: React.FC = () => {
         const move = getBestMove(newBoard);
         if (move !== -1) {
           newBoard[move] = 'O';
+          playCellSound(move);
           setBoard(newBoard);
 
           const result = checkWinner(newBoard);
@@ -129,6 +174,7 @@ const App: React.FC = () => {
 
     const newBoard = [...board];
     newBoard[index] = currentPlayer;
+    playCellSound(index);
     setBoard(newBoard);
 
     const result = checkWinner(newBoard);
@@ -244,45 +290,55 @@ const App: React.FC = () => {
       </div>
 
       {/* Game Board */}
-      <div className="relative">
-        <div className="grid grid-cols-3 gap-0 bg-te-black p-1 animate-grid-appear">
-          {board.map((cell, index) => (
-            <button
-              key={index}
-              onClick={() => handleCellClick(index)}
-              disabled={!!cell || !!winner || (gameMode === 'pvc' && currentPlayer === 'O')}
-              className={`
-                w-24 h-24 bg-te-white flex items-center justify-center
-                transition-all duration-200 relative overflow-hidden
-                ${!cell && !winner ? 'hover:bg-te-gray cursor-pointer' : ''}
-                ${winningLine?.includes(index) ? 'bg-te-orange/20' : ''}
-                ${index % 3 !== 2 ? 'border-r-2 border-te-black' : ''}
-                ${index < 6 ? 'border-b-2 border-te-black' : ''}
-              `}
-            >
-              {cell && (
-                <span
-                  className={`
-                    text-5xl font-bold animate-mark-appear
-                    ${cell === 'X' ? 'text-te-black' : 'text-te-orange'}
-                    ${winningLine?.includes(index) ? 'text-shadow-glow' : ''}
-                  `}
-                >
-                  {cell}
-                </span>
-              )}
-            </button>
-          ))}
-        </div>
+      <div
+        className="relative"
+        style={{ perspective: '800px' }}
+        onMouseMove={handleBoardMouseMove}
+        onMouseLeave={handleBoardMouseLeave}
+      >
+        <div
+          className="relative transition-transform duration-300"
+          style={{ transform: `rotateX(${tilt.y}deg) rotateY(${tilt.x}deg)` }}
+        >
+          <div className="grid grid-cols-3 gap-0 bg-te-black p-1 animate-grid-appear">
+            {cellIds.map((id, index) => (
+              <button
+                key={id}
+                onClick={() => handleCellClick(index)}
+                disabled={!!board[index] || !!winner || (gameMode === 'pvc' && currentPlayer === 'O')}
+                className={`
+                  w-24 h-24 bg-te-white flex items-center justify-center
+                  transition-all duration-200 relative overflow-hidden
+                  ${!board[index] && !winner ? 'hover:bg-te-gray cursor-pointer' : ''}
+                  ${winningLine?.includes(index) ? 'bg-te-orange/20' : ''}
+                  ${index % 3 !== 2 ? 'border-r-2 border-te-black' : ''}
+                  ${index < 6 ? 'border-b-2 border-te-black' : ''}
+                `}
+              >
+                {board[index] && (
+                  <span
+                    className={`
+                      text-5xl font-bold animate-mark-appear
+                      ${board[index] === 'X' ? 'text-te-black' : 'text-te-orange'}
+                      ${winningLine?.includes(index) ? 'text-shadow-glow' : ''}
+                    `}
+                  >
+                    {board[index]}
+                  </span>
+                )}
+              </button>
+            ))}
+          </div>
 
-        {/* Grid Lines Overlay */}
-        <div className="absolute inset-0 pointer-events-none">
-          <svg className="w-full h-full" viewBox="0 0 290 290">
-            <line x1="97" y1="5" x2="97" y2="285" stroke="#1A1A1A" strokeWidth="2"/>
-            <line x1="193" y1="5" x2="193" y2="285" stroke="#1A1A1A" strokeWidth="2"/>
-            <line x1="5" y1="97" x2="285" y2="97" stroke="#1A1A1A" strokeWidth="2"/>
-            <line x1="5" y1="193" x2="285" y2="193" stroke="#1A1A1A" strokeWidth="2"/>
-          </svg>
+          {/* Grid Lines Overlay */}
+          <div className="absolute inset-0 pointer-events-none">
+            <svg className="w-full h-full" viewBox="0 0 290 290">
+              <line x1="97" y1="5" x2="97" y2="285" stroke="#1A1A1A" strokeWidth="2" />
+              <line x1="193" y1="5" x2="193" y2="285" stroke="#1A1A1A" strokeWidth="2" />
+              <line x1="5" y1="97" x2="285" y2="97" stroke="#1A1A1A" strokeWidth="2" />
+              <line x1="5" y1="193" x2="285" y2="193" stroke="#1A1A1A" strokeWidth="2" />
+            </svg>
+          </div>
         </div>
       </div>
 
