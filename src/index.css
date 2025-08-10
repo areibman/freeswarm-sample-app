@@ -13,7 +13,7 @@
   }
 
   ::selection {
-    @apply bg-te-orange text-te-white;
+    @apply bg-te-purple text-te-white;
   }
 }
 
@@ -26,6 +26,6 @@
   }
 
   .text-shadow-glow {
-    text-shadow: 0 0 20px rgba(255, 107, 0, 0.5);
+    text-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
   }
 }
