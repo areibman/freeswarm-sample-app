@@ -11,6 +11,7 @@ export default {
         'te-black': '#1A1A1A',
         'te-gray': '#E5E5E5',
         'te-white': '#FAFAFA',
+        'te-purple': '#8B5CF6',
       },
       fontFamily: {
         'mono': ['JetBrains Mono', 'SF Mono', 'Roboto Mono', 'monospace'],

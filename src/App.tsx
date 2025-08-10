@@ -12,6 +12,7 @@ const App: React.FC = () => {
   const [score, setScore] = useState({ X: 0, O: 0 });
   const [gameMode, setGameMode] = useState<'pvp' | 'pvc'>('pvp');
   const [difficulty, setDifficulty] = useState<'easy' | 'hard'>('hard');
+  const [backgroundColor, setBackgroundColor] = useState<'white' | 'purple'>('white');
 
   const winPatterns = [
     [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
@@ -161,7 +162,7 @@ const App: React.FC = () => {
   const isDraw = winner === 'O' && board.every(cell => cell !== null);
 
   return (
-    <div className="min-h-screen bg-te-white grid-pattern flex flex-col items-center justify-center p-4">
+    <div className={`min-h-screen ${backgroundColor === 'purple' ? 'bg-te-purple' : 'bg-te-white'} grid-pattern flex flex-col items-center justify-center p-4`}>
       {/* Header */}
       <div className="max-w-lg w-full mb-8">
         <div className="flex items-center justify-between mb-2">
@@ -322,6 +323,16 @@ const App: React.FC = () => {
           className="flex-1 bg-te-gray text-te-black py-3 px-6 text-xs uppercase tracking-wider font-medium hover:bg-te-black hover:text-te-white transition-colors"
         >
           Reset Score
+        </button>
+        <button
+          onClick={() => setBackgroundColor(backgroundColor === 'purple' ? 'white' : 'purple')}
+          className={`flex-1 py-3 px-6 text-xs uppercase tracking-wider font-medium transition-colors ${
+            backgroundColor === 'purple'
+              ? 'bg-te-purple text-te-white hover:bg-te-black'
+              : 'bg-te-gray text-te-black hover:bg-te-purple hover:text-te-white'
+          }`}
+        >
+          {backgroundColor === 'purple' ? 'White BG' : 'Purple BG'}
         </button>
       </div>
 
