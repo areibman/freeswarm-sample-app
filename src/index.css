@@ -28,4 +28,25 @@
   .text-shadow-glow {
     text-shadow: 0 0 20px rgba(255, 107, 0, 0.5);
   }
+
+  /* 3D hardware helpers */
+  .perspective-1000 { perspective: 1000px; }
+  .preserve-3d { transform-style: preserve-3d; }
+  .inner-bevel { box-shadow: inset 0 1px 0 rgba(255,255,255,.75), inset 0 -2px 8px rgba(0,0,0,.18); }
+
+  .screw-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 9999px;
+    background: radial-gradient(circle at 30% 30%, #ffffff 0%, #d1d5db 35%, #6b7280 65%, #374151 100%);
+    box-shadow: inset 0 1px 1px rgba(255,255,255,.6), inset 0 -1px 1px rgba(0,0,0,.35), 0 2px 4px rgba(0,0,0,.25);
+  }
+
+  .led {
+    width: 10px;
+    height: 10px;
+    border-radius: 9999px;
+    background: radial-gradient(circle at 30% 30%, #ffb48a 0%, #ff6b00 60%, #c2410c 100%);
+    box-shadow: 0 0 8px rgba(255,107,0,.6), inset 0 0 2px rgba(255,107,0,.4);
+  }
 }
