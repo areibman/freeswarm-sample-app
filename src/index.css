@@ -4,8 +4,9 @@
 
 @layer base {
   body {
-    @apply bg-te-white text-te-black font-mono antialiased;
+    @apply bg-gray-200 text-te-black font-mono antialiased;
     font-feature-settings: "tnum" on, "lnum" on;
+    background: linear-gradient(135deg, #e0e0e0 0%, #c0c0c0 100%);
   }
 
   * {
@@ -18,6 +19,7 @@
 }
 
 @layer utilities {
+  /* Grid pattern for background */
   .grid-pattern {
     background-image:
       repeating-linear-gradient(0deg, transparent, transparent 39px, #E5E5E5 39px, #E5E5E5 40px),
@@ -25,7 +27,118 @@
     background-size: 40px 40px;
   }
 
+  /* Text shadow effects */
   .text-shadow-glow {
     text-shadow: 0 0 20px rgba(255, 107, 0, 0.5);
   }
+
+  /* LED display effect */
+  .drop-shadow-led {
+    filter: drop-shadow(0 0 8px currentColor);
+  }
+
+  /* Physical button shadows */
+  .shadow-button {
+    box-shadow: 
+      0 4px 6px rgba(0, 0, 0, 0.3),
+      0 1px 3px rgba(0, 0, 0, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  }
+
+  /* Knob shadow */
+  .shadow-knob {
+    box-shadow: 
+      0 8px 16px rgba(0, 0, 0, 0.4),
+      inset 0 2px 4px rgba(0, 0, 0, 0.3),
+      inset 0 -2px 4px rgba(255, 255, 255, 0.2);
+  }
+
+  /* Panel shadow */
+  .shadow-panel {
+    box-shadow: 
+      inset 0 2px 4px rgba(0, 0, 0, 0.1),
+      0 1px 2px rgba(0, 0, 0, 0.05);
+  }
+
+  /* 3D transform for game board */
+  .perspective-board {
+    perspective: 1000px;
+    transform-style: preserve-3d;
+  }
+
+  /* Animated pulse for power indicator */
+  @keyframes pulse-power {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  /* LED blink animation */
+  @keyframes led-blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  /* Smooth rotation for knobs */
+  .knob-rotate {
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Hardware texture overlay */
+  .hardware-texture {
+    position: relative;
+  }
+  
+  .hardware-texture::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.03) 2px,
+      rgba(0, 0, 0, 0.03) 4px
+    );
+    pointer-events: none;
+  }
+
+  /* Metallic gradient for controls */
+  .gradient-metal {
+    background: linear-gradient(
+      135deg,
+      #e8e8e8 0%,
+      #d0d0d0 50%,
+      #b8b8b8 100%
+    );
+  }
+
+  /* Active LED glow */
+  .led-active {
+    animation: led-blink 2s infinite;
+    filter: drop-shadow(0 0 10px currentColor);
+  }
+}
+
+/* Custom scrollbar for hardware feel */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #e0e0e0;
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #888 0%, #666 100%);
+  border-radius: 6px;
+  border: 2px solid #e0e0e0;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #666 0%, #444 100%);
 }
