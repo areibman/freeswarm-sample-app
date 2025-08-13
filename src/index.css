@@ -13,19 +13,19 @@
   }
 
   ::selection {
-    @apply bg-te-orange text-te-white;
+    @apply bg-te-purple text-te-white;
   }
 }
 
 @layer utilities {
   .grid-pattern {
     background-image:
-      repeating-linear-gradient(0deg, transparent, transparent 39px, #E5E5E5 39px, #E5E5E5 40px),
-      repeating-linear-gradient(90deg, transparent, transparent 39px, #E5E5E5 39px, #E5E5E5 40px);
+      repeating-linear-gradient(0deg, transparent, transparent 39px, #F3E8FF 39px, #F3E8FF 40px),
+      repeating-linear-gradient(90deg, transparent, transparent 39px, #F3E8FF 39px, #F3E8FF 40px);
     background-size: 40px 40px;
   }
 
   .text-shadow-glow {
-    text-shadow: 0 0 20px rgba(255, 107, 0, 0.5);
+    text-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
   }
 }

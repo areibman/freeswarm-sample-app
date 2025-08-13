@@ -179,8 +179,8 @@ const App: React.FC = () => {
             onClick={() => { setGameMode('pvp'); resetGame(); }}
             className={`flex-1 py-2 px-4 text-xs uppercase tracking-wider font-medium transition-all ${
               gameMode === 'pvp'
-                ? 'bg-te-orange text-te-white'
-                : 'bg-te-gray text-te-black hover:bg-te-black/10'
+                ? 'bg-te-purple text-te-white'
+                : 'bg-te-gray text-te-black hover:bg-te-purple/10'
             }`}
           >
             Player vs Player
@@ -189,8 +189,8 @@ const App: React.FC = () => {
             onClick={() => { setGameMode('pvc'); resetGame(); }}
             className={`flex-1 py-2 px-4 text-xs uppercase tracking-wider font-medium transition-all ${
               gameMode === 'pvc'
-                ? 'bg-te-orange text-te-white'
-                : 'bg-te-gray text-te-black hover:bg-te-black/10'
+                ? 'bg-te-purple text-te-white'
+                : 'bg-te-gray text-te-black hover:bg-te-purple/10'
             }`}
           >
             Player vs CPU
@@ -203,8 +203,8 @@ const App: React.FC = () => {
               onClick={() => { setDifficulty('easy'); resetGame(); }}
               className={`flex-1 py-2 px-4 text-xs uppercase tracking-wider font-medium transition-all ${
                 difficulty === 'easy'
-                  ? 'bg-te-black text-te-white'
-                  : 'bg-te-gray text-te-black hover:bg-te-black/10'
+                  ? 'bg-te-purple-dark text-te-white'
+                  : 'bg-te-gray text-te-black hover:bg-te-purple/10'
               }`}
             >
               Easy
@@ -213,8 +213,8 @@ const App: React.FC = () => {
               onClick={() => { setDifficulty('hard'); resetGame(); }}
               className={`flex-1 py-2 px-4 text-xs uppercase tracking-wider font-medium transition-all ${
                 difficulty === 'hard'
-                  ? 'bg-te-black text-te-white'
-                  : 'bg-te-gray text-te-black hover:bg-te-black/10'
+                  ? 'bg-te-purple-dark text-te-white'
+                  : 'bg-te-gray text-te-black hover:bg-te-purple/10'
               }`}
             >
               Hard
@@ -254,8 +254,8 @@ const App: React.FC = () => {
               className={`
                 w-24 h-24 bg-te-white flex items-center justify-center
                 transition-all duration-200 relative overflow-hidden
-                ${!cell && !winner ? 'hover:bg-te-gray cursor-pointer' : ''}
-                ${winningLine?.includes(index) ? 'bg-te-orange/20' : ''}
+                ${!cell && !winner ? 'hover:bg-te-purple/5 cursor-pointer' : ''}
+                ${winningLine?.includes(index) ? 'bg-te-purple/20' : ''}
                 ${index % 3 !== 2 ? 'border-r-2 border-te-black' : ''}
                 ${index < 6 ? 'border-b-2 border-te-black' : ''}
               `}
@@ -264,7 +264,7 @@ const App: React.FC = () => {
                 <span
                   className={`
                     text-5xl font-bold animate-mark-appear
-                    ${cell === 'X' ? 'text-te-black' : 'text-te-orange'}
+                    ${cell === 'X' ? 'text-te-black' : 'text-te-purple'}
                     ${winningLine?.includes(index) ? 'text-shadow-glow' : ''}
                   `}
                 >
@@ -294,14 +294,14 @@ const App: React.FC = () => {
               <div className="text-xs uppercase tracking-wider mb-2 text-te-black/50">
                 {isDraw ? 'Game Draw' : 'Winner'}
               </div>
-              <div className={`text-2xl font-bold ${isDraw ? 'text-te-black' : 'text-te-orange'}`}>
+              <div className={`text-2xl font-bold ${isDraw ? 'text-te-black' : 'text-te-purple'}`}>
                 {isDraw ? 'Draw!' : `Player ${winner} Wins!`}
               </div>
             </div>
           ) : (
             <div>
               <div className="text-xs uppercase tracking-wider mb-2 text-te-black/50">Current Turn</div>
-              <div className={`text-2xl font-bold ${currentPlayer === 'X' ? 'text-te-black' : 'text-te-orange'}`}>
+              <div className={`text-2xl font-bold ${currentPlayer === 'X' ? 'text-te-black' : 'text-te-purple'}`}>
                 {gameMode === 'pvc' && currentPlayer === 'O' ? 'CPU' : 'Player'} {currentPlayer}
               </div>
             </div>
@@ -313,13 +313,13 @@ const App: React.FC = () => {
       <div className="max-w-lg w-full mt-6 flex gap-2">
         <button
           onClick={resetGame}
-          className="flex-1 bg-te-black text-te-white py-3 px-6 text-xs uppercase tracking-wider font-medium hover:bg-te-orange transition-colors"
+          className="flex-1 bg-te-purple text-te-white py-3 px-6 text-xs uppercase tracking-wider font-medium hover:bg-te-purple-dark transition-colors"
         >
           New Game
         </button>
         <button
           onClick={resetScore}
-          className="flex-1 bg-te-gray text-te-black py-3 px-6 text-xs uppercase tracking-wider font-medium hover:bg-te-black hover:text-te-white transition-colors"
+          className="flex-1 bg-te-gray text-te-black py-3 px-6 text-xs uppercase tracking-wider font-medium hover:bg-te-purple hover:text-te-white transition-colors"
         >
           Reset Score
         </button>
