@@ -244,45 +244,47 @@ const App: React.FC = () => {
       </div>
 
       {/* Game Board */}
-      <div className="relative">
-        <div className="grid grid-cols-3 gap-0 bg-te-black p-1 animate-grid-appear">
-          {board.map((cell, index) => (
-            <button
-              key={index}
-              onClick={() => handleCellClick(index)}
-              disabled={!!cell || !!winner || (gameMode === 'pvc' && currentPlayer === 'O')}
-              className={`
-                w-24 h-24 bg-te-white flex items-center justify-center
-                transition-all duration-200 relative overflow-hidden
-                ${!cell && !winner ? 'hover:bg-te-gray cursor-pointer' : ''}
-                ${winningLine?.includes(index) ? 'bg-te-orange/20' : ''}
-                ${index % 3 !== 2 ? 'border-r-2 border-te-black' : ''}
-                ${index < 6 ? 'border-b-2 border-te-black' : ''}
-              `}
-            >
-              {cell && (
-                <span
-                  className={`
-                    text-5xl font-bold animate-mark-appear
-                    ${cell === 'X' ? 'text-te-black' : 'text-te-orange'}
-                    ${winningLine?.includes(index) ? 'text-shadow-glow' : ''}
-                  `}
-                >
-                  {cell}
-                </span>
-              )}
-            </button>
-          ))}
-        </div>
+      <div className="device-3d">
+        <div className="relative device-3d-inner">
+          <div className="grid grid-cols-3 gap-0 bg-te-black p-1 animate-grid-appear">
+            {board.map((cell, index) => (
+              <button
+                key={index}
+                onClick={() => handleCellClick(index)}
+                disabled={!!cell || !!winner || (gameMode === 'pvc' && currentPlayer === 'O')}
+                className={`
+                  pressable-3d w-24 h-24 bg-te-white flex items-center justify-center
+                  transition-all duration-200 relative overflow-hidden
+                  ${!cell && !winner ? 'hover:bg-te-gray cursor-pointer' : ''}
+                  ${winningLine?.includes(index) ? 'bg-te-orange/20' : ''}
+                  ${index % 3 !== 2 ? 'border-r-2 border-te-black' : ''}
+                  ${index < 6 ? 'border-b-2 border-te-black' : ''}
+                `}
+              >
+                {cell && (
+                  <span
+                    className={`
+                      text-5xl font-bold animate-mark-appear
+                      ${cell === 'X' ? 'text-te-black' : 'text-te-orange'}
+                      ${winningLine?.includes(index) ? 'text-shadow-glow' : ''}
+                    `}
+                  >
+                    {cell}
+                  </span>
+                )}
+              </button>
+            ))}
+          </div>
 
-        {/* Grid Lines Overlay */}
-        <div className="absolute inset-0 pointer-events-none">
-          <svg className="w-full h-full" viewBox="0 0 290 290">
-            <line x1="97" y1="5" x2="97" y2="285" stroke="#1A1A1A" strokeWidth="2"/>
-            <line x1="193" y1="5" x2="193" y2="285" stroke="#1A1A1A" strokeWidth="2"/>
-            <line x1="5" y1="97" x2="285" y2="97" stroke="#1A1A1A" strokeWidth="2"/>
-            <line x1="5" y1="193" x2="285" y2="193" stroke="#1A1A1A" strokeWidth="2"/>
-          </svg>
+          {/* Grid Lines Overlay */}
+          <div className="absolute inset-0 pointer-events-none">
+            <svg className="w-full h-full" viewBox="0 0 290 290">
+              <line x1="97" y1="5" x2="97" y2="285" stroke="#1A1A1A" strokeWidth="2"/>
+              <line x1="193" y1="5" x2="193" y2="285" stroke="#1A1A1A" strokeWidth="2"/>
+              <line x1="5" y1="97" x2="285" y2="97" stroke="#1A1A1A" strokeWidth="2"/>
+              <line x1="5" y1="193" x2="285" y2="193" stroke="#1A1A1A" strokeWidth="2"/>
+            </svg>
+          </div>
         </div>
       </div>
 
