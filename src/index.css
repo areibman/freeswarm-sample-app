@@ -6,10 +6,12 @@
   body {
     @apply bg-te-white text-te-black font-mono antialiased;
     font-feature-settings: "tnum" on, "lnum" on;
+    perspective: 1000px;
   }
 
   * {
     @apply box-border;
+    transform-style: preserve-3d;
   }
 
   ::selection {
@@ -27,5 +29,149 @@
 
   .text-shadow-glow {
     text-shadow: 0 0 20px rgba(255, 107, 0, 0.5);
+  }
+
+  /* Hardware-inspired 3D effects */
+  .te-hardware-panel {
+    background: linear-gradient(145deg, #FAFAFA 0%, #E5E5E5 100%);
+    border: 1px solid rgba(26, 26, 26, 0.1);
+    box-shadow: 
+      0 4px 8px rgba(0, 0, 0, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.8),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+  }
+
+  .te-hardware-button {
+    background: linear-gradient(145deg, #FAFAFA 0%, #E5E5E5 100%);
+    box-shadow: 
+      0 4px 8px rgba(0, 0, 0, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .te-hardware-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 
+      0 6px 12px rgba(0, 0, 0, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+  }
+
+  .te-hardware-button:active {
+    transform: translateY(1px);
+    box-shadow: 
+      0 2px 4px rgba(0, 0, 0, 0.1),
+      inset 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .te-orange-button {
+    background: linear-gradient(145deg, #FF6B00 0%, #E55A00 100%);
+    box-shadow: 
+      0 4px 8px rgba(255, 107, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+  }
+
+  .te-orange-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 
+      0 6px 12px rgba(255, 107, 0, 0.4),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+  }
+
+  .te-black-button {
+    background: linear-gradient(145deg, #2A2A2A 0%, #1A1A1A 100%);
+    box-shadow: 
+      0 4px 8px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+  }
+
+  .te-black-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 
+      0 6px 12px rgba(0, 0, 0, 0.4),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+  }
+
+  /* Game board 3D effects */
+  .te-game-board {
+    transform: perspective(1000px) rotateX(5deg) rotateY(-2deg);
+    transform-style: preserve-3d;
+    transition: transform 0.3s ease-out;
+  }
+
+  .te-game-board:hover {
+    transform: perspective(1000px) rotateX(2deg) rotateY(-1deg);
+  }
+
+  .te-cell {
+    transform-style: preserve-3d;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+  }
+
+  .te-cell::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.8) 0%, rgba(229, 229, 229, 0.8) 100%);
+    border-radius: 2px;
+    transform: translateZ(-2px);
+    opacity: 0;
+    transition: opacity 0.2s ease-out;
+  }
+
+  .te-cell:hover::before {
+    opacity: 1;
+  }
+
+  .te-cell:hover {
+    transform: translateZ(4px) rotateX(-2deg) rotateY(2deg);
+  }
+
+  .te-cell:active {
+    transform: translateZ(1px) scale(0.98);
+  }
+
+  /* Floating elements */
+  .te-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .te-float:nth-child(2n) {
+    animation-delay: -2s;
+  }
+
+  .te-float:nth-child(3n) {
+    animation-delay: -4s;
+  }
+
+  /* Interactive tilt effects */
+  .te-interactive {
+    transition: transform 0.3s ease-out;
+  }
+
+  .te-interactive:hover {
+    animation: tilt 0.3s ease-out;
+  }
+
+  /* Hardware-style bezels */
+  .te-bezel {
+    background: linear-gradient(145deg, #F5F5F5 0%, #E5E5E5 50%, #D5D5D5 100%);
+    border: 1px solid rgba(26, 26, 26, 0.1);
+    box-shadow: 
+      inset 0 2px 4px rgba(255, 255, 255, 0.8),
+      inset 0 -2px 4px rgba(0, 0, 0, 0.1),
+      0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Ambient lighting effects */
+  .te-ambient-light {
+    background: radial-gradient(circle at 30% 20%, rgba(255, 107, 0, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 70% 80%, rgba(26, 26, 26, 0.03) 0%, transparent 50%);
   }
 }
