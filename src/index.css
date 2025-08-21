@@ -4,7 +4,7 @@
 
 @layer base {
   body {
-    @apply bg-te-white text-te-black font-mono antialiased;
+    @apply bg-te-gradient text-te-black font-mono antialiased;
     font-feature-settings: "tnum" on, "lnum" on;
   }
 
@@ -20,12 +20,116 @@
 @layer utilities {
   .grid-pattern {
     background-image:
-      repeating-linear-gradient(0deg, transparent, transparent 39px, #E5E5E5 39px, #E5E5E5 40px),
-      repeating-linear-gradient(90deg, transparent, transparent 39px, #E5E5E5 39px, #E5E5E5 40px);
+      repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(229, 229, 229, 0.6) 39px, rgba(229, 229, 229, 0.6) 40px),
+      repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(229, 229, 229, 0.6) 39px, rgba(229, 229, 229, 0.6) 40px);
     background-size: 40px 40px;
   }
 
   .text-shadow-glow {
-    text-shadow: 0 0 20px rgba(255, 107, 0, 0.5);
+    text-shadow: 0 0 20px rgba(255, 107, 0, 0.5), 0 2px 4px rgba(26, 26, 26, 0.3);
+  }
+
+  .text-shadow-subtle {
+    text-shadow: 0 1px 2px rgba(26, 26, 26, 0.1);
+  }
+
+  .text-shadow-raised {
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8), 0 2px 4px rgba(26, 26, 26, 0.2);
+  }
+
+  .text-shadow-inset {
+    text-shadow: inset 0 1px 2px rgba(26, 26, 26, 0.3);
+  }
+
+  .button-3d {
+    @apply relative transform transition-all duration-150 ease-out;
+    @apply bg-te-gradient-button shadow-te-raised;
+    @apply border border-te-gray-dark/20;
+  }
+
+  .button-3d:hover {
+    @apply shadow-te-deep;
+    transform: translateY(-1px);
+  }
+
+  .button-3d:active {
+    @apply shadow-te-pressed;
+    transform: translateY(1px);
+    @apply animate-button-press;
+  }
+
+  .button-3d-orange {
+    @apply bg-te-gradient-orange shadow-te-button-orange text-te-white;
+    @apply border border-orange-600/20;
+  }
+
+  .button-3d-black {
+    @apply bg-te-gradient-black shadow-te-button-black text-te-white;
+    @apply border border-black/20;
+  }
+
+  .panel-3d {
+    @apply bg-te-gradient-panel shadow-te-panel;
+    @apply border border-te-gray-dark/20;
+    @apply relative;
+  }
+
+  .panel-3d::before {
+    content: '';
+    @apply absolute inset-0 rounded-inherit;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%, rgba(0, 0, 0, 0.05) 100%);
+    pointer-events: none;
+  }
+
+  .cell-3d {
+    @apply relative bg-te-gradient shadow-te-raised;
+    @apply border border-te-gray-dark/30;
+    @apply transform transition-all duration-200 ease-out;
+  }
+
+  .cell-3d::before {
+    content: '';
+    @apply absolute inset-0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, transparent 50%, rgba(26, 26, 26, 0.05) 100%);
+    pointer-events: none;
+  }
+
+  .cell-3d:hover {
+    @apply shadow-te-deep;
+    transform: translateY(-1px);
+  }
+
+  .cell-3d:active {
+    @apply shadow-te-pressed;
+    transform: translateY(1px);
+  }
+
+  .cell-3d.winning {
+    @apply shadow-te-button-orange;
+    background: linear-gradient(135deg, rgba(255, 107, 0, 0.1) 0%, rgba(255, 107, 0, 0.05) 100%);
+  }
+
+  .board-3d {
+    @apply relative shadow-te-deep;
+    @apply border-2 border-te-black/20;
+    background: linear-gradient(135deg, #2A2A2A 0%, #1A1A1A 50%, #0A0A0A 100%);
+  }
+
+  .board-3d::before {
+    content: '';
+    @apply absolute inset-0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%, rgba(0, 0, 0, 0.2) 100%);
+    pointer-events: none;
+  }
+
+  .header-3d {
+    @apply relative;
+  }
+
+  .header-3d::after {
+    content: '';
+    @apply absolute bottom-0 left-0 right-0 h-0.5;
+    background: linear-gradient(90deg, transparent 0%, #1A1A1A 50%, transparent 100%);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1);
   }
 }

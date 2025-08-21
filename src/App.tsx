@@ -161,15 +161,15 @@ const App: React.FC = () => {
   const isDraw = winner === 'O' && board.every(cell => cell !== null);
 
   return (
-    <div className="min-h-screen bg-te-white grid-pattern flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen bg-te-gradient grid-pattern flex flex-col items-center justify-center p-4">
       {/* Header */}
       <div className="max-w-lg w-full mb-8">
         <div className="flex items-center justify-between mb-2">
-          <div className="text-xs uppercase tracking-wider text-te-black/50">TE-01</div>
-          <div className="text-xs uppercase tracking-wider text-te-black/50">V1.0</div>
+          <div className="text-xs uppercase tracking-wider text-te-black/50 text-shadow-subtle">TE-01</div>
+          <div className="text-xs uppercase tracking-wider text-te-black/50 text-shadow-subtle">V1.0</div>
         </div>
-        <h1 className="text-3xl font-bold uppercase tracking-tight mb-1">Tic Tac Toe</h1>
-        <div className="h-0.5 bg-te-black w-full" />
+        <h1 className="text-3xl font-bold uppercase tracking-tight mb-1 text-shadow-raised">Tic Tac Toe</h1>
+        <div className="header-3d" />
       </div>
 
       {/* Game Mode Selector */}
@@ -179,8 +179,8 @@ const App: React.FC = () => {
             onClick={() => { setGameMode('pvp'); resetGame(); }}
             className={`flex-1 py-2 px-4 text-xs uppercase tracking-wider font-medium transition-all ${
               gameMode === 'pvp'
-                ? 'bg-te-orange text-te-white'
-                : 'bg-te-gray text-te-black hover:bg-te-black/10'
+                ? 'button-3d-orange text-shadow-subtle'
+                : 'button-3d text-te-black'
             }`}
           >
             Player vs Player
@@ -189,8 +189,8 @@ const App: React.FC = () => {
             onClick={() => { setGameMode('pvc'); resetGame(); }}
             className={`flex-1 py-2 px-4 text-xs uppercase tracking-wider font-medium transition-all ${
               gameMode === 'pvc'
-                ? 'bg-te-orange text-te-white'
-                : 'bg-te-gray text-te-black hover:bg-te-black/10'
+                ? 'button-3d-orange text-shadow-subtle'
+                : 'button-3d text-te-black'
             }`}
           >
             Player vs CPU
@@ -203,8 +203,8 @@ const App: React.FC = () => {
               onClick={() => { setDifficulty('easy'); resetGame(); }}
               className={`flex-1 py-2 px-4 text-xs uppercase tracking-wider font-medium transition-all ${
                 difficulty === 'easy'
-                  ? 'bg-te-black text-te-white'
-                  : 'bg-te-gray text-te-black hover:bg-te-black/10'
+                  ? 'button-3d-black text-shadow-subtle'
+                  : 'button-3d text-te-black'
               }`}
             >
               Easy
@@ -213,8 +213,8 @@ const App: React.FC = () => {
               onClick={() => { setDifficulty('hard'); resetGame(); }}
               className={`flex-1 py-2 px-4 text-xs uppercase tracking-wider font-medium transition-all ${
                 difficulty === 'hard'
-                  ? 'bg-te-black text-te-white'
-                  : 'bg-te-gray text-te-black hover:bg-te-black/10'
+                  ? 'button-3d-black text-shadow-subtle'
+                  : 'button-3d text-te-black'
               }`}
             >
               Hard
@@ -225,83 +225,76 @@ const App: React.FC = () => {
 
       {/* Score Display */}
       <div className="max-w-lg w-full mb-6">
-        <div className="grid grid-cols-3 gap-4 bg-te-gray p-4">
+        <div className="grid grid-cols-3 gap-4 panel-3d p-4">
           <div className="text-center">
-            <div className="text-xs uppercase tracking-wider mb-1 text-te-black/50">Player X</div>
-            <div className="text-2xl font-bold">{score.X}</div>
+            <div className="text-xs uppercase tracking-wider mb-1 text-te-black/50 text-shadow-subtle">Player X</div>
+            <div className="text-2xl font-bold text-shadow-raised">{score.X}</div>
           </div>
           <div className="text-center">
-            <div className="text-xs uppercase tracking-wider mb-1 text-te-black/50">Draw</div>
-            <div className="text-2xl font-bold">-</div>
+            <div className="text-xs uppercase tracking-wider mb-1 text-te-black/50 text-shadow-subtle">Draw</div>
+            <div className="text-2xl font-bold text-shadow-raised">-</div>
           </div>
           <div className="text-center">
-            <div className="text-xs uppercase tracking-wider mb-1 text-te-black/50">
+            <div className="text-xs uppercase tracking-wider mb-1 text-te-black/50 text-shadow-subtle">
               {gameMode === 'pvc' ? 'CPU O' : 'Player O'}
             </div>
-            <div className="text-2xl font-bold">{score.O}</div>
+            <div className="text-2xl font-bold text-shadow-raised">{score.O}</div>
           </div>
         </div>
       </div>
 
       {/* Game Board */}
       <div className="relative">
-        <div className="grid grid-cols-3 gap-0 bg-te-black p-1 animate-grid-appear">
-          {board.map((cell, index) => (
-            <button
-              key={index}
-              onClick={() => handleCellClick(index)}
-              disabled={!!cell || !!winner || (gameMode === 'pvc' && currentPlayer === 'O')}
-              className={`
-                w-24 h-24 bg-te-white flex items-center justify-center
-                transition-all duration-200 relative overflow-hidden
-                ${!cell && !winner ? 'hover:bg-te-gray cursor-pointer' : ''}
-                ${winningLine?.includes(index) ? 'bg-te-orange/20' : ''}
-                ${index % 3 !== 2 ? 'border-r-2 border-te-black' : ''}
-                ${index < 6 ? 'border-b-2 border-te-black' : ''}
-              `}
-            >
-              {cell && (
-                <span
-                  className={`
-                    text-5xl font-bold animate-mark-appear
-                    ${cell === 'X' ? 'text-te-black' : 'text-te-orange'}
-                    ${winningLine?.includes(index) ? 'text-shadow-glow' : ''}
-                  `}
-                >
-                  {cell}
-                </span>
-              )}
-            </button>
-          ))}
-        </div>
-
-        {/* Grid Lines Overlay */}
-        <div className="absolute inset-0 pointer-events-none">
-          <svg className="w-full h-full" viewBox="0 0 290 290">
-            <line x1="97" y1="5" x2="97" y2="285" stroke="#1A1A1A" strokeWidth="2"/>
-            <line x1="193" y1="5" x2="193" y2="285" stroke="#1A1A1A" strokeWidth="2"/>
-            <line x1="5" y1="97" x2="285" y2="97" stroke="#1A1A1A" strokeWidth="2"/>
-            <line x1="5" y1="193" x2="285" y2="193" stroke="#1A1A1A" strokeWidth="2"/>
-          </svg>
+        <div className="board-3d p-2 animate-grid-appear">
+          <div className="grid grid-cols-3 gap-1">
+            {board.map((cell, index) => (
+              <button
+                key={index}
+                onClick={() => handleCellClick(index)}
+                disabled={!!cell || !!winner || (gameMode === 'pvc' && currentPlayer === 'O')}
+                className={`
+                  w-24 h-24 flex items-center justify-center
+                  transition-all duration-200 relative overflow-hidden
+                  ${!cell && !winner ? 'cursor-pointer' : ''}
+                  ${winningLine?.includes(index) 
+                    ? 'cell-3d winning' 
+                    : 'cell-3d'
+                  }
+                `}
+              >
+                {cell && (
+                  <span
+                    className={`
+                      text-5xl font-bold animate-mark-appear
+                      ${cell === 'X' ? 'text-te-black text-shadow-raised' : 'text-te-orange'}
+                      ${winningLine?.includes(index) ? 'text-shadow-glow' : 'text-shadow-subtle'}
+                    `}
+                  >
+                    {cell}
+                  </span>
+                )}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
       {/* Status Display */}
       <div className="max-w-lg w-full mt-6 text-center">
-        <div className="bg-te-gray p-4">
+        <div className="panel-3d p-4">
           {winner ? (
             <div>
-              <div className="text-xs uppercase tracking-wider mb-2 text-te-black/50">
+              <div className="text-xs uppercase tracking-wider mb-2 text-te-black/50 text-shadow-subtle">
                 {isDraw ? 'Game Draw' : 'Winner'}
               </div>
-              <div className={`text-2xl font-bold ${isDraw ? 'text-te-black' : 'text-te-orange'}`}>
+              <div className={`text-2xl font-bold ${isDraw ? 'text-te-black text-shadow-raised' : 'text-te-orange text-shadow-glow'}`}>
                 {isDraw ? 'Draw!' : `Player ${winner} Wins!`}
               </div>
             </div>
           ) : (
             <div>
-              <div className="text-xs uppercase tracking-wider mb-2 text-te-black/50">Current Turn</div>
-              <div className={`text-2xl font-bold ${currentPlayer === 'X' ? 'text-te-black' : 'text-te-orange'}`}>
+              <div className="text-xs uppercase tracking-wider mb-2 text-te-black/50 text-shadow-subtle">Current Turn</div>
+              <div className={`text-2xl font-bold ${currentPlayer === 'X' ? 'text-te-black text-shadow-raised' : 'text-te-orange text-shadow-glow'}`}>
                 {gameMode === 'pvc' && currentPlayer === 'O' ? 'CPU' : 'Player'} {currentPlayer}
               </div>
             </div>
@@ -313,13 +306,13 @@ const App: React.FC = () => {
       <div className="max-w-lg w-full mt-6 flex gap-2">
         <button
           onClick={resetGame}
-          className="flex-1 bg-te-black text-te-white py-3 px-6 text-xs uppercase tracking-wider font-medium hover:bg-te-orange transition-colors"
+          className="flex-1 button-3d-black py-3 px-6 text-xs uppercase tracking-wider font-medium text-shadow-subtle"
         >
           New Game
         </button>
         <button
           onClick={resetScore}
-          className="flex-1 bg-te-gray text-te-black py-3 px-6 text-xs uppercase tracking-wider font-medium hover:bg-te-black hover:text-te-white transition-colors"
+          className="flex-1 button-3d py-3 px-6 text-xs uppercase tracking-wider font-medium text-te-black"
         >
           Reset Score
         </button>
@@ -327,7 +320,7 @@ const App: React.FC = () => {
 
       {/* Footer */}
       <div className="max-w-lg w-full mt-8 text-center">
-        <div className="text-xs uppercase tracking-wider text-te-black/30">
+        <div className="text-xs uppercase tracking-wider text-te-black/30 text-shadow-subtle">
           teenage engineering × tic tac toe
         </div>
       </div>
