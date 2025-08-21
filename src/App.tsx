@@ -161,36 +161,43 @@ const App: React.FC = () => {
   const isDraw = winner === 'O' && board.every(cell => cell !== null);
 
   return (
-    <div className="min-h-screen bg-te-white grid-pattern flex flex-col items-center justify-center p-4">
-      {/* Header */}
-      <div className="max-w-lg w-full mb-8">
-        <div className="flex items-center justify-between mb-2">
-          <div className="text-xs uppercase tracking-wider text-te-black/50">TE-01</div>
-          <div className="text-xs uppercase tracking-wider text-te-black/50">V1.0</div>
+    <div className="min-h-screen bg-te-white grid-pattern flex flex-col items-center justify-center p-4" style={{ perspective: '2000px' }}>
+      {/* Header with 3D effect */}
+      <div className="max-w-lg w-full mb-8 transform-gpu" style={{ transform: 'translateZ(50px)' }}>
+        <div className="bg-te-white shadow-te-3d p-4 border-2 border-te-black">
+          <div className="flex items-center justify-between mb-2">
+            <div className="text-xs uppercase tracking-wider text-te-black/50 font-bold">TE-01</div>
+            <div className="flex gap-2">
+              <div className="w-2 h-2 bg-te-orange rounded-full animate-pulse-slow"></div>
+              <div className="w-2 h-2 bg-te-black rounded-full"></div>
+              <div className="w-2 h-2 bg-te-gray-dark rounded-full"></div>
+            </div>
+            <div className="text-xs uppercase tracking-wider text-te-black/50 font-bold">V1.0</div>
+          </div>
+          <h1 className="text-4xl font-bold uppercase tracking-tight mb-1 text-3d">Tic Tac Toe</h1>
+          <div className="h-1 bg-te-orange w-full shadow-te-3d-sm" />
         </div>
-        <h1 className="text-3xl font-bold uppercase tracking-tight mb-1">Tic Tac Toe</h1>
-        <div className="h-0.5 bg-te-black w-full" />
       </div>
 
-      {/* Game Mode Selector */}
+      {/* Game Mode Selector with 3D buttons */}
       <div className="max-w-lg w-full mb-6">
-        <div className="flex gap-2 mb-4">
+        <div className="flex gap-3 mb-4">
           <button
             onClick={() => { setGameMode('pvp'); resetGame(); }}
-            className={`flex-1 py-2 px-4 text-xs uppercase tracking-wider font-medium transition-all ${
+            className={`flex-1 py-3 px-4 text-xs uppercase tracking-wider font-bold transition-all btn-3d border-2 border-te-black ${
               gameMode === 'pvp'
-                ? 'bg-te-orange text-te-white'
-                : 'bg-te-gray text-te-black hover:bg-te-black/10'
+                ? 'bg-te-orange text-te-white shadow-te-3d-orange'
+                : 'bg-te-white text-te-black shadow-te-3d hover:shadow-te-3d-lg hover:-translate-y-0.5'
             }`}
           >
             Player vs Player
           </button>
           <button
             onClick={() => { setGameMode('pvc'); resetGame(); }}
-            className={`flex-1 py-2 px-4 text-xs uppercase tracking-wider font-medium transition-all ${
+            className={`flex-1 py-3 px-4 text-xs uppercase tracking-wider font-bold transition-all btn-3d border-2 border-te-black ${
               gameMode === 'pvc'
-                ? 'bg-te-orange text-te-white'
-                : 'bg-te-gray text-te-black hover:bg-te-black/10'
+                ? 'bg-te-orange text-te-white shadow-te-3d-orange'
+                : 'bg-te-white text-te-black shadow-te-3d hover:shadow-te-3d-lg hover:-translate-y-0.5'
             }`}
           >
             Player vs CPU
@@ -198,23 +205,23 @@ const App: React.FC = () => {
         </div>
 
         {gameMode === 'pvc' && (
-          <div className="flex gap-2">
+          <div className="flex gap-3">
             <button
               onClick={() => { setDifficulty('easy'); resetGame(); }}
-              className={`flex-1 py-2 px-4 text-xs uppercase tracking-wider font-medium transition-all ${
+              className={`flex-1 py-3 px-4 text-xs uppercase tracking-wider font-bold transition-all btn-3d border-2 border-te-black ${
                 difficulty === 'easy'
-                  ? 'bg-te-black text-te-white'
-                  : 'bg-te-gray text-te-black hover:bg-te-black/10'
+                  ? 'bg-te-black text-te-white shadow-te-3d'
+                  : 'bg-te-gray text-te-black shadow-te-3d-sm hover:shadow-te-3d hover:-translate-y-0.5'
               }`}
             >
               Easy
             </button>
             <button
               onClick={() => { setDifficulty('hard'); resetGame(); }}
-              className={`flex-1 py-2 px-4 text-xs uppercase tracking-wider font-medium transition-all ${
+              className={`flex-1 py-3 px-4 text-xs uppercase tracking-wider font-bold transition-all btn-3d border-2 border-te-black ${
                 difficulty === 'hard'
-                  ? 'bg-te-black text-te-white'
-                  : 'bg-te-gray text-te-black hover:bg-te-black/10'
+                  ? 'bg-te-black text-te-white shadow-te-3d'
+                  : 'bg-te-gray text-te-black shadow-te-3d-sm hover:shadow-te-3d hover:-translate-y-0.5'
               }`}
             >
               Hard
@@ -223,49 +230,55 @@ const App: React.FC = () => {
         )}
       </div>
 
-      {/* Score Display */}
-      <div className="max-w-lg w-full mb-6">
-        <div className="grid grid-cols-3 gap-4 bg-te-gray p-4">
+      {/* Score Display with 3D card effect */}
+      <div className="max-w-lg w-full mb-8">
+        <div className="grid grid-cols-3 gap-4 bg-te-white p-6 border-2 border-te-black shadow-te-3d-lg card-3d">
           <div className="text-center">
-            <div className="text-xs uppercase tracking-wider mb-1 text-te-black/50">Player X</div>
-            <div className="text-2xl font-bold">{score.X}</div>
+            <div className="text-xs uppercase tracking-wider mb-2 text-te-black/50 font-bold">Player X</div>
+            <div className="text-3xl font-bold text-3d">{score.X}</div>
           </div>
           <div className="text-center">
-            <div className="text-xs uppercase tracking-wider mb-1 text-te-black/50">Draw</div>
-            <div className="text-2xl font-bold">-</div>
+            <div className="text-xs uppercase tracking-wider mb-2 text-te-black/50 font-bold">Draw</div>
+            <div className="text-3xl font-bold text-3d">-</div>
           </div>
           <div className="text-center">
-            <div className="text-xs uppercase tracking-wider mb-1 text-te-black/50">
+            <div className="text-xs uppercase tracking-wider mb-2 text-te-black/50 font-bold">
               {gameMode === 'pvc' ? 'CPU O' : 'Player O'}
             </div>
-            <div className="text-2xl font-bold">{score.O}</div>
+            <div className="text-3xl font-bold text-3d-orange text-te-orange">{score.O}</div>
           </div>
         </div>
       </div>
 
-      {/* Game Board */}
-      <div className="relative">
-        <div className="grid grid-cols-3 gap-0 bg-te-black p-1 animate-grid-appear">
+      {/* Game Board with enhanced 3D effect */}
+      <div className="relative mb-8" style={{ transformStyle: 'preserve-3d', transform: 'rotateX(10deg)' }}>
+        <div className="absolute inset-0 bg-te-black/20 blur-xl transform translate-y-8" style={{ zIndex: -1 }}></div>
+        <div className="grid grid-cols-3 gap-0 bg-te-black p-2 animate-grid-appear board-3d shadow-te-elevated">
           {board.map((cell, index) => (
             <button
               key={index}
               onClick={() => handleCellClick(index)}
               disabled={!!cell || !!winner || (gameMode === 'pvc' && currentPlayer === 'O')}
               className={`
-                w-24 h-24 bg-te-white flex items-center justify-center
-                transition-all duration-200 relative overflow-hidden
-                ${!cell && !winner ? 'hover:bg-te-gray cursor-pointer' : ''}
-                ${winningLine?.includes(index) ? 'bg-te-orange/20' : ''}
-                ${index % 3 !== 2 ? 'border-r-2 border-te-black' : ''}
-                ${index < 6 ? 'border-b-2 border-te-black' : ''}
+                w-28 h-28 bg-te-white flex items-center justify-center
+                transition-all duration-200 relative overflow-hidden cell-3d
+                ${!cell && !winner ? 'hover:bg-te-gray hover:shadow-te-inner cursor-pointer' : ''}
+                ${winningLine?.includes(index) ? 'bg-te-orange/30 animate-pulse-slow' : ''}
+                ${index % 3 !== 2 ? 'border-r-4 border-te-black' : ''}
+                ${index < 6 ? 'border-b-4 border-te-black' : ''}
+                shadow-te-inner
               `}
+              style={{
+                transformStyle: 'preserve-3d',
+                transform: winningLine?.includes(index) ? 'translateZ(15px)' : 'translateZ(0)'
+              }}
             >
               {cell && (
                 <span
                   className={`
-                    text-5xl font-bold animate-mark-appear
-                    ${cell === 'X' ? 'text-te-black' : 'text-te-orange'}
-                    ${winningLine?.includes(index) ? 'text-shadow-glow' : ''}
+                    text-6xl font-bold animate-mark-appear
+                    ${cell === 'X' ? 'text-te-black text-3d' : 'text-te-orange text-3d-orange'}
+                    ${winningLine?.includes(index) ? 'animate-float-3d' : ''}
                   `}
                 >
                   {cell}
@@ -274,34 +287,24 @@ const App: React.FC = () => {
             </button>
           ))}
         </div>
-
-        {/* Grid Lines Overlay */}
-        <div className="absolute inset-0 pointer-events-none">
-          <svg className="w-full h-full" viewBox="0 0 290 290">
-            <line x1="97" y1="5" x2="97" y2="285" stroke="#1A1A1A" strokeWidth="2"/>
-            <line x1="193" y1="5" x2="193" y2="285" stroke="#1A1A1A" strokeWidth="2"/>
-            <line x1="5" y1="97" x2="285" y2="97" stroke="#1A1A1A" strokeWidth="2"/>
-            <line x1="5" y1="193" x2="285" y2="193" stroke="#1A1A1A" strokeWidth="2"/>
-          </svg>
-        </div>
       </div>
 
-      {/* Status Display */}
-      <div className="max-w-lg w-full mt-6 text-center">
-        <div className="bg-te-gray p-4">
+      {/* Status Display with 3D card */}
+      <div className="max-w-lg w-full mb-6 text-center">
+        <div className="bg-te-white p-6 border-2 border-te-black shadow-te-3d-lg card-3d">
           {winner ? (
             <div>
-              <div className="text-xs uppercase tracking-wider mb-2 text-te-black/50">
+              <div className="text-xs uppercase tracking-wider mb-3 text-te-black/50 font-bold">
                 {isDraw ? 'Game Draw' : 'Winner'}
               </div>
-              <div className={`text-2xl font-bold ${isDraw ? 'text-te-black' : 'text-te-orange'}`}>
+              <div className={`text-3xl font-bold ${isDraw ? 'text-te-black text-3d' : 'text-te-orange text-3d-orange animate-pulse-slow'}`}>
                 {isDraw ? 'Draw!' : `Player ${winner} Wins!`}
               </div>
             </div>
           ) : (
             <div>
-              <div className="text-xs uppercase tracking-wider mb-2 text-te-black/50">Current Turn</div>
-              <div className={`text-2xl font-bold ${currentPlayer === 'X' ? 'text-te-black' : 'text-te-orange'}`}>
+              <div className="text-xs uppercase tracking-wider mb-3 text-te-black/50 font-bold">Current Turn</div>
+              <div className={`text-3xl font-bold ${currentPlayer === 'X' ? 'text-te-black text-3d' : 'text-te-orange text-3d-orange'}`}>
                 {gameMode === 'pvc' && currentPlayer === 'O' ? 'CPU' : 'Player'} {currentPlayer}
               </div>
             </div>
@@ -309,25 +312,29 @@ const App: React.FC = () => {
         </div>
       </div>
 
-      {/* Control Buttons */}
-      <div className="max-w-lg w-full mt-6 flex gap-2">
+      {/* Control Buttons with enhanced 3D effect */}
+      <div className="max-w-lg w-full flex gap-3">
         <button
           onClick={resetGame}
-          className="flex-1 bg-te-black text-te-white py-3 px-6 text-xs uppercase tracking-wider font-medium hover:bg-te-orange transition-colors"
+          className="flex-1 bg-te-black text-te-white py-4 px-6 text-xs uppercase tracking-wider font-bold 
+                     border-2 border-te-black shadow-te-3d-lg btn-3d
+                     hover:bg-te-orange hover:shadow-te-3d-orange transition-all"
         >
           New Game
         </button>
         <button
           onClick={resetScore}
-          className="flex-1 bg-te-gray text-te-black py-3 px-6 text-xs uppercase tracking-wider font-medium hover:bg-te-black hover:text-te-white transition-colors"
+          className="flex-1 bg-te-white text-te-black py-4 px-6 text-xs uppercase tracking-wider font-bold 
+                     border-2 border-te-black shadow-te-3d btn-3d
+                     hover:bg-te-gray hover:shadow-te-3d-lg transition-all"
         >
           Reset Score
         </button>
       </div>
 
-      {/* Footer */}
-      <div className="max-w-lg w-full mt-8 text-center">
-        <div className="text-xs uppercase tracking-wider text-te-black/30">
+      {/* Footer with 3D text */}
+      <div className="max-w-lg w-full mt-12 text-center">
+        <div className="text-xs uppercase tracking-wider text-te-black/40 font-bold text-3d">
           teenage engineering × tic tac toe
         </div>
       </div>
