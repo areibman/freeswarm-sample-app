@@ -6,6 +6,8 @@
   body {
     @apply bg-te-white text-te-black font-mono antialiased;
     font-feature-settings: "tnum" on, "lnum" on;
+    perspective: 2000px;
+    transform-style: preserve-3d;
   }
 
   * {
@@ -23,9 +25,91 @@
       repeating-linear-gradient(0deg, transparent, transparent 39px, #E5E5E5 39px, #E5E5E5 40px),
       repeating-linear-gradient(90deg, transparent, transparent 39px, #E5E5E5 39px, #E5E5E5 40px);
     background-size: 40px 40px;
+    position: relative;
+  }
+
+  .grid-pattern::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(0,0,0,0.05) 100%);
+    pointer-events: none;
   }
 
   .text-shadow-glow {
-    text-shadow: 0 0 20px rgba(255, 107, 0, 0.5);
+    text-shadow: 
+      0 0 20px rgba(255, 107, 0, 0.5),
+      2px 2px 0px rgba(229, 90, 0, 0.8);
+  }
+
+  .btn-3d {
+    @apply relative transition-all duration-150;
+    transform-style: preserve-3d;
+    transform: translateZ(0);
+  }
+
+  .btn-3d::before {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-b from-white/10 to-black/10 rounded-sm;
+    transform: translateZ(-1px);
+  }
+
+  .btn-3d:hover {
+    transform: translateY(-2px) translateZ(5px);
+  }
+
+  .btn-3d:active {
+    transform: translateY(2px) translateX(2px) translateZ(0);
+  }
+
+  .card-3d {
+    @apply relative;
+    transform-style: preserve-3d;
+    transform: translateZ(0);
+  }
+
+  .card-3d::before {
+    content: '';
+    @apply absolute inset-0 rounded-sm;
+    background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(0,0,0,0.1) 100%);
+    transform: translateZ(-1px);
+  }
+
+  .cell-3d {
+    @apply relative;
+    transform-style: preserve-3d;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .cell-3d:hover {
+    transform: translateZ(10px) scale(1.02);
+  }
+
+  .cell-3d:active {
+    transform: translateZ(2px) scale(0.98);
+  }
+
+  .board-3d {
+    transform-style: preserve-3d;
+    transform: rotateX(5deg) rotateY(-5deg);
+    transition: transform 0.3s ease-out;
+  }
+
+  .board-3d:hover {
+    transform: rotateX(2deg) rotateY(-2deg);
+  }
+
+  .text-3d {
+    text-shadow: 
+      1px 1px 0px rgba(0,0,0,0.2),
+      2px 2px 0px rgba(0,0,0,0.1),
+      3px 3px 0px rgba(0,0,0,0.05);
+  }
+
+  .text-3d-orange {
+    text-shadow: 
+      1px 1px 0px rgba(229, 90, 0, 0.8),
+      2px 2px 0px rgba(229, 90, 0, 0.4),
+      3px 3px 0px rgba(229, 90, 0, 0.2);
   }
 }
