@@ -29,3 +29,133 @@
     text-shadow: 0 0 20px rgba(255, 107, 0, 0.5);
   }
 }
+
+@layer base {
+  :root {
+    --te-orange: #FF6B00;
+    --te-black: #1A1A1A;
+    --te-gray: #E5E5E5;
+    --te-white: #FAFAFA;
+    --shadow-strong: rgba(0, 0, 0, 0.25);
+    --shadow-soft: rgba(0, 0, 0, 0.12);
+    --highlight: rgba(255, 255, 255, 0.85);
+  }
+}
+
+@layer utilities {
+  /* Subtle lens vignette for depth */
+  .vignette {
+    background-image:
+      radial-gradient(120% 80% at 50% 0%, rgba(0,0,0,0.08), transparent 55%),
+      radial-gradient(120% 100% at 50% 100%, rgba(0,0,0,0.06), transparent 60%);
+    background-blend-mode: multiply;
+  }
+
+  /* Perspective helpers */
+  .perspective-1000 { perspective: 1000px; }
+  .tilt-hover { transition: transform 300ms ease; transform-style: preserve-3d; }
+  .tilt-hover:hover { transform: rotateX(2deg) rotateY(-2deg) translateY(-2px); }
+
+  /* Text extrusion for marks */
+  .text-extrude-dark {
+    text-shadow:
+      0 1px 0 rgba(0,0,0,0.45),
+      0 2px 0 rgba(0,0,0,0.35),
+      0 3px 2px rgba(0,0,0,0.25);
+  }
+  .text-extrude-orange {
+    text-shadow:
+      0 1px 0 rgba(0,0,0,0.25),
+      0 2px 0 rgba(0,0,0,0.18),
+      0 6px 10px rgba(255, 107, 0, 0.35);
+  }
+
+  /* Elevation presets */
+  .te-elev-1 { box-shadow: 0 1px 0 var(--shadow-soft), 0 8px 18px -8px var(--shadow-soft); }
+  .te-elev-2 { box-shadow: 0 2px 0 var(--shadow-soft), 0 14px 30px -10px var(--shadow-strong); }
+}
+
+@layer components {
+  /* Hard-edged panel with subtle inner bevel */
+  .te-panel {
+    background-image: linear-gradient(180deg, #FFFFFF, #F3F3F3);
+    border: 1px solid #D8D8D8;
+    box-shadow:
+      inset -1px -1px 0 var(--highlight),
+      inset 1px 1px 0 rgba(0,0,0,0.08);
+  }
+
+  /* Keycap-like tile for the board cells */
+  .te-keycap {
+    background-image: radial-gradient(120% 100% at 50% 10%, #FFFFFF 0%, #F6F6F6 60%, #EEEEEE 100%);
+    border: 1px solid #D6D6D6;
+    box-shadow:
+      -1px -1px 0 var(--highlight) inset,
+      1px 1px 0 rgba(0,0,0,0.1) inset,
+      0 1px 0 rgba(0,0,0,0.12),
+      0 10px 20px -8px rgba(0,0,0,0.18);
+    transition: transform 150ms ease, box-shadow 150ms ease;
+    transform: translateZ(0);
+  }
+  .te-keycap:hover { transform: translateY(-1px); }
+  .te-keycap:active {
+    box-shadow:
+      -1px -1px 0 var(--highlight) inset,
+      1px 1px 0 rgba(0,0,0,0.12) inset,
+      0 0 0 rgba(0,0,0,0.0),
+      0 4px 8px -6px rgba(0,0,0,0.2);
+    transform: translateY(0);
+  }
+
+  /* 3D buttons with sharp geometry and TE accent */
+  .te-button-3d {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+    color: var(--te-black);
+    background-image: linear-gradient(180deg, #FFFFFF, #F2F2F2);
+    border: 1px solid #D6D6D6;
+    box-shadow:
+      -1px -1px 0 var(--highlight) inset,
+      1px 1px 0 rgba(0,0,0,0.08) inset,
+      0 1px 0 rgba(0,0,0,0.1),
+      0 10px 20px -10px rgba(0,0,0,0.18);
+    transition: transform 150ms ease, box-shadow 150ms ease, color 150ms ease, background 150ms ease;
+  }
+  .te-button-3d:hover {
+    box-shadow:
+      -1px -1px 0 var(--highlight) inset,
+      1px 1px 0 rgba(0,0,0,0.1) inset,
+      0 2px 0 rgba(0,0,0,0.12),
+      0 14px 24px -12px rgba(0,0,0,0.22);
+  }
+  .te-button-3d:active { transform: translateY(1px); }
+  .te-button-3d.is-active {
+    border-color: #CFCFCF;
+    background-image: linear-gradient(180deg, #111111, #1A1A1A);
+    color: var(--te-white);
+    box-shadow:
+      inset 0 0 0 1px rgba(255,255,255,0.05),
+      0 2px 0 rgba(0,0,0,0.25),
+      0 14px 30px -10px rgba(0,0,0,0.35);
+  }
+  .te-button-3d.is-primary {
+    background-image: linear-gradient(180deg, #FF7F26, #FF6B00);
+    color: var(--te-white);
+    border-color: #FF6B00;
+    box-shadow:
+      inset 0 0 0 1px rgba(255,255,255,0.15),
+      0 2px 0 rgba(0,0,0,0.2),
+      0 16px 30px -10px rgba(255,107,0,0.45);
+  }
+
+  /* Orange focus ring for accessibility */
+  .te-button-3d:focus-visible,
+  .te-keycap:focus-visible { outline: 2px solid var(--te-orange); outline-offset: 2px; }
+}
