@@ -177,7 +177,7 @@ const App: React.FC = () => {
         <div className="flex gap-2 mb-4">
           <button
             onClick={() => { setGameMode('pvp'); resetGame(); }}
-            className={`flex-1 py-2 px-4 text-xs uppercase tracking-wider font-medium transition-all ${
+            className={`flex-1 py-2 px-4 text-xs uppercase tracking-wider font-medium transition-all raised-3d pressable ${
               gameMode === 'pvp'
                 ? 'bg-te-orange text-te-white'
                 : 'bg-te-gray text-te-black hover:bg-te-black/10'
@@ -187,7 +187,7 @@ const App: React.FC = () => {
           </button>
           <button
             onClick={() => { setGameMode('pvc'); resetGame(); }}
-            className={`flex-1 py-2 px-4 text-xs uppercase tracking-wider font-medium transition-all ${
+            className={`flex-1 py-2 px-4 text-xs uppercase tracking-wider font-medium transition-all raised-3d pressable ${
               gameMode === 'pvc'
                 ? 'bg-te-orange text-te-white'
                 : 'bg-te-gray text-te-black hover:bg-te-black/10'
@@ -201,7 +201,7 @@ const App: React.FC = () => {
           <div className="flex gap-2">
             <button
               onClick={() => { setDifficulty('easy'); resetGame(); }}
-              className={`flex-1 py-2 px-4 text-xs uppercase tracking-wider font-medium transition-all ${
+              className={`flex-1 py-2 px-4 text-xs uppercase tracking-wider font-medium transition-all raised-3d pressable ${
                 difficulty === 'easy'
                   ? 'bg-te-black text-te-white'
                   : 'bg-te-gray text-te-black hover:bg-te-black/10'
@@ -211,7 +211,7 @@ const App: React.FC = () => {
             </button>
             <button
               onClick={() => { setDifficulty('hard'); resetGame(); }}
-              className={`flex-1 py-2 px-4 text-xs uppercase tracking-wider font-medium transition-all ${
+              className={`flex-1 py-2 px-4 text-xs uppercase tracking-wider font-medium transition-all raised-3d pressable ${
                 difficulty === 'hard'
                   ? 'bg-te-black text-te-white'
                   : 'bg-te-gray text-te-black hover:bg-te-black/10'
@@ -253,7 +253,7 @@ const App: React.FC = () => {
               disabled={!!cell || !!winner || (gameMode === 'pvc' && currentPlayer === 'O')}
               className={`
                 w-24 h-24 bg-te-white flex items-center justify-center
-                transition-all duration-200 relative overflow-hidden
+                transition-all duration-200 relative overflow-hidden raised-3d pressable
                 ${!cell && !winner ? 'hover:bg-te-gray cursor-pointer' : ''}
                 ${winningLine?.includes(index) ? 'bg-te-orange/20' : ''}
                 ${index % 3 !== 2 ? 'border-r-2 border-te-black' : ''}
@@ -313,13 +313,13 @@ const App: React.FC = () => {
       <div className="max-w-lg w-full mt-6 flex gap-2">
         <button
           onClick={resetGame}
-          className="flex-1 bg-te-black text-te-white py-3 px-6 text-xs uppercase tracking-wider font-medium hover:bg-te-orange transition-colors"
+          className="flex-1 bg-te-black text-te-white py-3 px-6 text-xs uppercase tracking-wider font-medium hover:bg-te-orange transition-colors raised-3d pressable"
         >
           New Game
         </button>
         <button
           onClick={resetScore}
-          className="flex-1 bg-te-gray text-te-black py-3 px-6 text-xs uppercase tracking-wider font-medium hover:bg-te-black hover:text-te-white transition-colors"
+          className="flex-1 bg-te-gray text-te-black py-3 px-6 text-xs uppercase tracking-wider font-medium hover:bg-te-black hover:text-te-white transition-colors raised-3d pressable"
         >
           Reset Score
         </button>
