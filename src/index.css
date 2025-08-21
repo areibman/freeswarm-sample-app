@@ -28,4 +28,18 @@
   .text-shadow-glow {
     text-shadow: 0 0 20px rgba(255, 107, 0, 0.5);
   }
+
+  /* 3D raised surface */
+  .raised-3d {
+    box-shadow: 0 4px 0 0 #1A1A1A;
+  }
+
+  /* Pressable element interaction */
+  .pressable {
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+  }
+  .pressable:active {
+    transform: translate(2px, 2px);
+    box-shadow: 0 0 0 0 #1A1A1A;
+  }
 }
